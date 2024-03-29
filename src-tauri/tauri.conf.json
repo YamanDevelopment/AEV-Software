@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "aev-software",
+    "productName": "Dash",
     "version": "0.0.0"
   },
   "tauri": {
@@ -20,7 +20,7 @@
     },
     "windows": [
       {
-        "title": "aev-software",
+        "title": "Dash",
         "width": 800,
         "height": 600
       }
