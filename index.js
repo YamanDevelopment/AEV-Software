@@ -1,10 +1,19 @@
-"use strict";
-import { SerialPort, ReadlineParser } from "serialport";
+import { SerialPort } from 'serialport'
 
-var port = new SerialPort('\\\\.\\COM3', {baudrate: 9600}, true);
-port.on('open', function () {
-    port.port.emitData('data');
-});
-var parser = port.pipe(new ReadlineParser());
-parser.on('data', console.log);
-port.write('ROBOT PLEASE RESPOND\n');
+// Create a port
+const port = new SerialPort({
+  path: 'COM3',
+  baudRate: 115200,
+})
+
+port.write('help', function(err) {
+    if (err) {
+      return console.log('Error on write: ', err.message)
+    }
+    console.log('message written')
+  })
+
+  port.on('data', function (data) {
+    console.log('Data:', data)
+  })
+  
