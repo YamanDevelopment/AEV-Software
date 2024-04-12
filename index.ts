@@ -8,8 +8,8 @@ import { dirname, join } from 'node:path';
 
 
 let SerialPort = require("serialport");
-const portNum = 15;
-
+const port = "COM3";
+/*
 const app = express();
 const server = createServer(app);
 const io = new Server(server);
@@ -37,11 +37,12 @@ interface portOptions {
 
 let port = "COM1";
 let message = "Hakuna Matata";
-
+*/
 let serialPort2 = new SerialPort(port, {
     baudRate: 9600
 });
 
+let message = "show";
 serialPort2.write(message, function(err) {
     if (err) {
         return console.log("Error on write: ", err.message);
