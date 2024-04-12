@@ -1,10 +1,13 @@
-import { ReadlineParser, SerialPort } from "serialport";
+
 import { Server } from 'socket.io';
 import express from 'express';
+
 import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
+
+let SerialPort = require("serialport");
 const portNum = 15;
 
 const app = express();
@@ -31,21 +34,17 @@ interface portOptions {
 }
 
 
-let options: portOptions = {
-    path: "path",
-    baudRate: 9600,
-}
-const port = new SerialPort(options);
 
-port.on('open', () => {
-    port.port.emitData('data');
-  })
+let port = "COM1";
+let message = "Hakuna Matata";
 
+let serialPort = new SerialPort(port, {
+  baudRate: 9600
+});
 
-const parser = port.pipe(new ReadlineParser());
-parser.on('data',console.log);
-port.write('ROBOT PLEASE RESPOND\n');
-
-
-
-            
+serialPort.write(message, function(err) {
+  if (err) {
+    return console.log("Error on write: ", err.message);
+  }
+  console.log("Message sent successfully");
+});
