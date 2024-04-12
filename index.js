@@ -1,11 +1,7 @@
 "use strict";
 import { SerialPort, ReadlineParser } from "serialport";
 
-var options = {
-    path: "COM3",
-    baudRate: 9600,
-};
-var port = new SerialPort(options);
+var port = new SerialPort('\\\\.\\COM3', {baudrate: 9600}, true);
 port.on('open', function () {
     port.port.emitData('data');
 });
