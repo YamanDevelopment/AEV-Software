@@ -1,5 +1,4 @@
-import { SerialPort } from 'serialport';
-import { DelimiterParser } from '@serialport/parser-delimiter'
+import { SerialPort, ReadlineParser } from 'serialport';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
@@ -19,7 +18,7 @@ io.on("connection", (socket) => {
     baudRate: 115200,
   });
   console.log(port);
-  const parser = port.pipe(new DelimiterParser({ delimiter: '\n' }));
+  const parser = port.pipe(new ReadlineParser());
   parser.on('data', console.log);
 
   port.write('help', function(err) {
