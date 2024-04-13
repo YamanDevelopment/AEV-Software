@@ -1,4 +1,5 @@
 import { SerialPort } from 'serialport';
+import { DelimiterParser } from '@serialport/parser-delimiter'
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
@@ -18,20 +19,20 @@ io.on("connection", (socket) => {
     baudRate: 115200,
   });
   console.log(port);
+  const parser = port.pipe(new DelimiterParser({ delimiter: '\n' }));
+  parser.on('data', console.log);
+
   port.write('help', function(err) {
     if (err) {
       return console.log('Error on write: ', err.message)
     }
     console.log('message written')
   });
-  port.on('data', function (data) {
-    console.log('Data:', data);
-    socket.emit('data', data);
-    
-  });
 
 
-  
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });  
 })
 
 const _dirname = dirname(fileURLToPath(import.meta.url));

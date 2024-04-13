@@ -1,0 +1,10 @@
+    pack
+            voltage : 85.63v
+            cells   : 29
+            mean    : 2.939v
+            std dev : 0.362v
+        alerts      : pack in LVC
+                    : not locked
+        current     :  -64.0A
+
+                    
