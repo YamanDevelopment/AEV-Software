@@ -38,7 +38,13 @@ io.on("connection", (socket) => {
   });
 
   readData(port,socket);
+
+  let interval = setInterval(2000, () => {
+    writeData('sh', socket);
+  })
   writeData('sh',port);
+
+  
 
 
 // 
