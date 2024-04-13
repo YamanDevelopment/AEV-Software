@@ -10,6 +10,25 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
+async function writeData(data,port) {
+  port.write(data, function(err) {
+    if (err) {
+      return console.log('Error on write: ', err.message)
+    }
+    console.log('message written')
+  });
+}
+async function readData(port,socket) {
+  const parser = port.pipe(new ReadlineParser());
+  parser.on('data', (data) => {
+    socket.emit('data', data);
+    console.log("Data: ", data)
+  });
+  
+
+}
+
+
 io.on("connection", (socket) => {
   console.log(socket);
 
@@ -17,23 +36,20 @@ io.on("connection", (socket) => {
     path: 'COM3',
     baudRate: 115200,
   });
-  console.log(port);
-  const parser = port.pipe(new ReadlineParser());
-  parser.on('data', console.log);
 
-  port.write('help', function(err) {
-    if (err) {
-      return console.log('Error on write: ', err.message)
-    }
-    console.log('message written')
-  });
+  readData(port,socket);
+  writeData('sh',port);
 
 
+// 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });  
 })
 
+
+
+readData
 const _dirname = dirname(fileURLToPath(import.meta.url));
 app.use('/',express.static(join(_dirname,"static")));
 
