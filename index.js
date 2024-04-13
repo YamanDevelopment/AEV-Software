@@ -10,13 +10,8 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-async function writeData(data,port) {
-  port.write(data, function(err) {
-    if (err) {
-      return console.log('Error on write: ', err.message)
-    }
-    console.log('message written')
-  });
+function writeData(data,port) {
+  
 }
 async function readData(port,socket) {
   const parser = port.pipe(new ReadlineParser());
@@ -38,12 +33,14 @@ io.on("connection", (socket) => {
   });
 
   readData(port,socket);
-
-  let interval = setInterval(() => {
-    writeData('sh', socket);
-  }, 200)
-  writeData('sh',port);
-
+  const myTimeout = setInterval(() => {
+    port.write('sh\n', function(err) {
+      if (err) {
+        return console.log('Error on write: ', err.message)
+      }
+      console.log('message written')
+    });
+  },5000)
   
 
 
