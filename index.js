@@ -5,12 +5,15 @@ import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
 import {dirname, join} from 'node:path';
 import express from "express";
+import { Parser } from "simple-text-parser";
 import { read } from 'fs';
 
 
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
+
+
 
 async function writeData(data,port) {
   port.write(data, function(err) {
@@ -20,20 +23,37 @@ async function writeData(data,port) {
     console.log('message written')
   });
 }
- function readData(port) {
-  const parser = port.pipe(new ByteLengthParser({length: 250}));
+ function readData(port,bytecount) {
+  const byteparser = port.pipe(new ByteLengthParser({length: bytecount}));
   let data;
-  parser.on('data', (stream) => {
+  byteparser.on('data', (stream) => {
     data = Buffer.toString(stream);
   });
-  parser.off('data');
+  byteparser.off('data');
   return data;
 }
 
-function showBatteryData(port) {
+function getBatteryData(port) { 
+  const textparser = new Parser();
   writeData('sh\n',port); //need to later add the command to switch to battery data
-  let data = readData(port);
-  return data;
+  let data = readData(port, 250);
+  let battery_data = {};
+  textparser.addRule('voltage : {voltage}v', (tag, voltage) => {
+    battery_data.voltage = voltage; 
+  });
+  textparser.addRule('cells   : {cells}', (tag, cells) => {
+    battery_data.cells = cells; 
+  });
+  textparser.addRule('mean    : {mean}v', (tag, mean) => {
+    battery_data.mean = mean; 
+  });
+  textparser.addRule('current : {current}v', (tag, current) => {
+    battery_data.current = current; 
+  });
+
+  data = textparser.render(data);
+
+  return battery_data;
 }
 
 io.on("connection", (socket) => {
@@ -44,7 +64,7 @@ io.on("connection", (socket) => {
     baudRate: 115200,
   });
   let interval = setInterval(() => {
-    let data = showBatteryData(port);
+    let data = getBatteryData(port);
     socket.emit('data', data);
   }, 200)
   // When a client connects, send battery data (github copilot wrote that)
