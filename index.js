@@ -12,10 +12,15 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
-function writeData(data,port) {
-  
+async function writeData(data,port) {
+  port.write(data, function(err) {
+    if (err) {
+      return console.log('Error on write: ', err.message)
+    }
+    console.log('message written')
+  });
 }
-function readData(port) {
+ function readData(port) {
   const parser = port.pipe(new ByteLengthParser({length: 250}));
   let data;
   parser.on('data', (stream) => {
@@ -38,18 +43,12 @@ io.on("connection", (socket) => {
     path: 'COM3',
     baudRate: 115200,
   });
-
-  readData(port,socket);
-
   let interval = setInterval(() => {
-    writeData('sh', socket);
+    let data = showBatteryData(port);
+    socket.emit('data', data);
   }, 200)
-  writeData('sh',port);
-
-  
-
-
-// 
+  // When a client connects, send battery data (github copilot wrote that)
+//
   socket.on("disconnect", () => {
     console.log("Client disconnected");
   });  
