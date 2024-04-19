@@ -27,19 +27,15 @@ const io = new Server(httpServer);
   const byteparser = port.pipe(new ByteLengthParser({length: bytecount}));
   let data;
   byteparser.on('data', (stream) => {
-    console.log(stream.toString());
-    console.log(stream);
+    data = stream.toString();
     byteparser.off('data', () => {});
   });
-
-  
   return data;
 }
 
 function getBatteryData(port) { 
   const textparser = new Parser();
   writeData('sh\n',port); //need to later add the command to switch to battery data
-
   let data = readData(port, 250);
   let battery_data = {};
   textparser.addRule('voltage : {voltage}v', (tag, voltage) => {
