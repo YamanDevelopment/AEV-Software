@@ -15,7 +15,7 @@ const io = new Server(httpServer);
 
 
 
-async function writeData(data,port) {
+ function writeData(data,port) {
   port.write(data, function(err) {
     if (err) {
       return console.log('Error on write: ', err.message)
@@ -27,15 +27,19 @@ async function writeData(data,port) {
   const byteparser = port.pipe(new ByteLengthParser({length: bytecount}));
   let data;
   byteparser.on('data', (stream) => {
-    data = Buffer.toString(stream);
+    console.log(stream.toString());
+    console.log(stream);
+    byteparser.off('data', () => {});
   });
-  byteparser.off('data');
+
+  
   return data;
 }
 
 function getBatteryData(port) { 
   const textparser = new Parser();
   writeData('sh\n',port); //need to later add the command to switch to battery data
+
   let data = readData(port, 250);
   let battery_data = {};
   textparser.addRule('voltage : {voltage}v', (tag, voltage) => {
@@ -65,8 +69,10 @@ io.on("connection", (socket) => {
   });
   let interval = setInterval(() => {
     let data = getBatteryData(port);
+    console.log(data);
+    
     socket.emit('data', data);
-  }, 200)
+  }, 1000)
   // When a client connects, send battery data (github copilot wrote that)
 //
   socket.on("disconnect", () => {
