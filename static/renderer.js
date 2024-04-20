@@ -1,11 +1,11 @@
 // Import necessary modules
 import * as THREE from 'three';
-import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+//import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // Load a GLB file
-const loader = new OBJLoader();
+const loader = new GLTFLoader();
 
 // setup //
 const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
@@ -41,15 +41,15 @@ console.log(scene);
 // load a resource
 loader.load(
     // resource URL
-    './car.obj',
+    './car.glb',
     // called when resource is loaded
-    function (object) {
-        object.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                child.material.color.set(0x000000); // Set color to black
-            }
-        });
-        scene.add(object);
+    function (gltf) {
+        //object.traverse(function (child) {
+          //  if (child instanceof THREE.Mesh) {
+            //    child.material.color.set(0x000000); // Set color to black
+            //}
+        // });
+        scene.add(gltf.scene);
     },
     // called when loading is in progresses
     function (xhr) {
@@ -57,7 +57,7 @@ loader.load(
     },
     // called when loading has errors
     function (error) {
-        console.log('An error happened');
+        console.error(error);
     }
 );
 
