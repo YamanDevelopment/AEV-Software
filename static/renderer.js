@@ -10,6 +10,10 @@ const loader = new GLTFLoader();
 // setup //
 const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+document.body.style.margin = '0';
+document.body.style.overflow = 'hidden';
+
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
