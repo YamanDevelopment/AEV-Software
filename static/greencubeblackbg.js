@@ -1,5 +1,6 @@
 // Import Three.js
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
 // Create a scene
 let scene = new THREE.Scene();
@@ -19,11 +20,15 @@ let geometry = new THREE.BoxGeometry(1, 1, 1);
 // Create a material
 let material = new THREE.MeshBasicMaterial({color: 0x00ff00});
 
-// Create a mesh
-let cube = new THREE.Mesh(geometry, material);
 
+const loader = new GLTFLoader();
+
+loader.load('./car.glb', function(gltf) {
+    scene.add(gltf.scene);
+}, undefined, function(error) {
+    console.error(error);
+});
 // Add the cube to the scene
-scene.add(cube);
 
 // Animation
 function animate() {

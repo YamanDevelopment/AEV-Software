@@ -56,7 +56,7 @@ function getBatteryData(port) {
     //if(item.includes('alerts')) {}
     
   }
-  console.log(battery_data);
+  return battery_data;
 }
 
 io.on("connection", (socket) => {
@@ -67,10 +67,9 @@ io.on("connection", (socket) => {
     baudRate: 115200,
   });
   let interval = setInterval(() => {
-    let data = getBatteryData(port);
-    console.log(data);
-    
-    socket.emit('data', data);
+    let data = getBatteryData(port)
+        
+    socket.emit('data', data.current);
   }, 1000)
   // When a client connects, send battery data (github copilot wrote that)
 //
