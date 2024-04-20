@@ -44,11 +44,12 @@ loader.load(
     './car.glb',
     // called when resource is loaded
     function (gltf) {
-        //object.traverse(function (child) {
-          //  if (child instanceof THREE.Mesh) {
-            //    child.material.color.set(0x000000); // Set color to black
-            //}
-        // });
+        let content = gltf.scene;
+        content.traverse(function (child) {
+            if (child instanceof THREE.Mesh) {
+                child.material.color.set(0x000000); // Set color to black
+            }
+        });
         scene.add(gltf.scene);
     },
     // called when loading is in progresses
