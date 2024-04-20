@@ -14,7 +14,8 @@
     "express": "^4.19.2",
     "serialport": "^12.0.0",
     "simple-text-parser": "^2.1.1",
-    "socket.io": "^4.7.5"
+    "socket.io": "^4.7.5",
+    "socketio": "^1.0.0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^1",
