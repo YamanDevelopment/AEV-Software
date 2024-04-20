@@ -1,40 +1,34 @@
-// Import Three.js
+// Import necessary modules
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 // Create a scene
-let scene = new THREE.Scene();
+const scene = new THREE.Scene();
 
 // Create a camera
-let camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 camera.position.z = 5;
 
 // Create a renderer
-let renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Create a geometry
-let geometry = new THREE.BoxGeometry(1, 1, 1);
-
-// Create a material
-let material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-
-
+// Create a GLTFLoader
 const loader = new GLTFLoader();
 
-loader.load('./car.glb', function(gltf) {
+// Load a GLB file
+loader.load('/car.glb', function (gltf) {
+    // When the model is loaded, add it to the scene
     scene.add(gltf.scene);
-}, undefined, function(error) {
+    console.log(scene);
+}, undefined, function (error) {
     console.error(error);
 });
-// Add the cube to the scene
 
-// Animation
+// Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
     renderer.render(scene, camera);
 }
 animate();
