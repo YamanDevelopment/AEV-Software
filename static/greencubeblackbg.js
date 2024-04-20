@@ -1,6 +1,7 @@
 // Import necessary modules
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+
 
 // Create a scene
 const scene = new THREE.Scene();
@@ -14,17 +15,31 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-// Create a GLTFLoader
-const loader = new GLTFLoader();
-
 // Load a GLB file
-loader.load('/car.glb', function (gltf) {
-    // When the model is loaded, add it to the scene
-    scene.add(gltf.scene);
-    console.log(scene);
-}, undefined, function (error) {
-    console.error(error);
-});
+const loader = new OBJLoader();
+
+// load a resource
+loader.load(
+	// resource URL
+	'./car.obj',
+	// called when resource is loaded
+	function ( object ) {
+
+		scene.add( object );
+
+	},
+	// called when loading is in progresses
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+    }
+);
 
 // Animation loop
 function animate() {
