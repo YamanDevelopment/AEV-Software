@@ -5,7 +5,7 @@ import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
 import {dirname, join} from 'node:path';
 import express from "express";
-import { Parser } from "simple-text-parser";
+
 import { read } from 'fs';
 
 
@@ -35,26 +35,28 @@ const io = new Server(httpServer);
 }
 
 function getBatteryData(port) { 
-  const textparser = new Parser();
   writeData('sh\n',port); //need to later add the command to switch to battery data
-  let data = readData(port, 250);
+  // let data = readData(port, 250);
+  let data = `  no cells detected
+  alerts    : not locked
+  current   : -62.1A
+  SOC       : 0%
+  uptime: 0 hour(s), 5 minute(s), 24 second(s)`;
   let battery_data = {};
-  textparser.addRule('voltage : {voltage}v', (tag, voltage) => {
-    battery_data.voltage = voltage; 
-  });
-  textparser.addRule('cells   : {cells}', (tag, cells) => {
-    battery_data.cells = cells; 
-  });
-  textparser.addRule('mean    : {mean}v', (tag, mean) => {
-    battery_data.mean = mean; 
-  });
-  textparser.addRule('current : {current}v', (tag, current) => {
-    battery_data.current = current; 
-  });
-
-  data = textparser.render(data);
-
-  return battery_data;
+  let data_arr = data.split('\n');
+  let new_arr = []
+  for(let item of data_arr) {
+    item = item.trim();
+    item = item.split(' ');
+    item = item.filter((el) => el != '');
+    new_arr.push(item);
+    if(item.includes(':') && !(item.includes('uptime')) && !(item.includes('alerts'))){
+      battery_data[item[0]] = item[2];
+    }
+    //if(item.includes('alerts')) {}
+    
+  }
+  console.log(battery_data);
 }
 
 io.on("connection", (socket) => {
