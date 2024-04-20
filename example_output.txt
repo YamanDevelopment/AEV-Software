@@ -1,10 +1,5 @@
-    pack
-            voltage : 85.63v
-            cells   : 29
-            mean    : 2.939v
-            std dev : 0.362v
-        alerts      : pack in LVC
-                    : not locked
-        current     :  -64.0A
-
-                    
+  no cells detected
+  alerts    : not locked
+  current   : -62.1A
+  SOC       : 0%
+  uptime: 0 hour(s), 5 minute(s), 24 second(s)

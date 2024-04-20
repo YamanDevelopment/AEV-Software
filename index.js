@@ -28,6 +28,7 @@ const io = new Server(httpServer);
   let data;
   byteparser.on('data', (stream) => {
     data = stream.toString();
+    console.log(data);
     byteparser.off('data', () => {});
   });
   return data;
