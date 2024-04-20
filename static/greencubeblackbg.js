@@ -1,22 +1,42 @@
 // Import necessary modules
 import * as THREE from 'three';
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-
-// Create a scene
-const scene = new THREE.Scene();
-
-// Create a camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 5;
-
-// Create a renderer
-const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
 
 // Load a GLB file
 const loader = new OBJLoader();
+
+// setup //
+const renderer = new THREE.WebGLRenderer({ alpha: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth, window.innerHeight);
+const camera = new THREE.PerspectiveCamera(
+    45,
+    window.innerWidth / window.innerHeight,
+    1,
+    10000
+);
+
+camera.position.set(500, 500, 500);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.update();
+renderer.render(scene, camera);
+
+/// lighting ///
+
+const light = new THREE.AmbientLight(0xffaaff);
+light.position.set(10, 10, 10);
+scene.add(light);
+
+/// geometry ///
+
+
+console.log(scene);
 
 // load a resource
 loader.load(
@@ -41,9 +61,14 @@ loader.load(
     }
 );
 
-// Animation loop
 function animate() {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
 }
+
 animate();
+
+
+
+
+
