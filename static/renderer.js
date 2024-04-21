@@ -33,9 +33,16 @@ renderer.render(scene, camera);
 
 /// lighting ///
 
-const light = new THREE.AmbientLight(0xffaaff);
+const light = new THREE.AmbientLight(0xffffff);
 light.position.set(10, 10, 10);
 scene.add(light);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+directionalLight.position.set(0, 1, 0); // set the position of the light
+scene.add(directionalLight);
+const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+pointLight.position.set(0, 10, 0); // set the position of the light
+scene.add(pointLight);
+
 
 /// geometry ///
 
@@ -51,7 +58,10 @@ loader.load(
         let content = gltf.scene;
         content.traverse(function (child) {
             if (child instanceof THREE.Mesh) {
-                child.material.color.set(0x000000); // Set color to black
+                if (child.material.map) { // check if the material has a texture map
+                    child.material.roughness = 1; // adjust roughness
+                    child.material.metalness = 0; // adjust metalness
+                }
             }
         });
         scene.add(gltf.scene);
