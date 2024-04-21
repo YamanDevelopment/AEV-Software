@@ -23,3 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 *.obj
+
+# src-tauri or some shit
+
+/src-tauri/*
