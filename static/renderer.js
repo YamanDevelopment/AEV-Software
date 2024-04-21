@@ -14,7 +14,9 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 
-document.body.appendChild(renderer.domElement);
+document.getElementById('container').innerHTML = ''; // make the container empty
+document.getElementById('container').style.width = '100%'; // make the container full width
+document.getElementById('container').appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 renderer.setPixelRatio(window.devicePixelRatio);
