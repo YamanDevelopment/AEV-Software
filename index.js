@@ -61,22 +61,28 @@ function getBatteryData(port) {
 
 io.on("connection", (socket) => {
   console.log(socket);
-
-  const port = new SerialPort({
-    path: 'COM3',
-    baudRate: 115200,
-  });
-  let interval = setInterval(() => {
-    let data = getBatteryData(port)
-        
-    socket.emit('data', data.current);
-  }, 1000)
-  // When a client connects, send battery data (github copilot wrote that)
-//
-  socket.on("disconnect", () => {
-    console.log("Client disconnected");
-  });  
+  try {
+    const port = new SerialPort({
+      path: 'COM3',
+      baudRate: 115200,
+    });
+    let interval = setInterval(() => {
+      let data = getBatteryData(port)
+          
+      socket.emit('data', data.current);
+    }, 1000)
+    // When a client connects, send battery data (github copilot wrote that)
+  //
+    socket.on("disconnect", () => {
+      console.log("Client disconnected");
+    });  
+  }
+  catch (err) {
+    console.error(error);
+  }
+  
 })
+
 
 
 // Static files (html, css, js) (also wrote by copilot)
