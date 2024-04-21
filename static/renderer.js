@@ -65,7 +65,6 @@ loader.load(
         }
       });
       scene.add(gltf.scene);
-      document.getElementById('loading').style.display = 'none'; // hide loading element
     },
     function (xhr) {
       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
