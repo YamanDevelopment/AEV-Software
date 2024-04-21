@@ -107,3 +107,15 @@ button {
     background-color: #0f0f0f69;
   }
 }
+
+
+/* our own zamned css */
+
+#loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  z-index: 1000;
+}

@@ -51,30 +51,27 @@ console.log(scene);
 
 // load a resource
 loader.load(
-    // resource URL
     './car.glb',
-    // called when resource is loaded
     function (gltf) {
-        let content = gltf.scene;
-        content.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-                if (child.material.map) { // check if the material has a texture map
-                    child.material.roughness = 1; // adjust roughness
-                    child.material.metalness = 0; // adjust metalness
-                }
-            }
-        });
-        scene.add(gltf.scene);
+      let content = gltf.scene;
+      content.traverse(function (child) {
+        if (child instanceof THREE.Mesh) {
+          if (child.material.map) {
+            child.material.roughness = 1;
+            child.material.metalness = 0;
+          }
+        }
+      });
+      scene.add(gltf.scene);
+      document.getElementById('loading').style.display = 'none'; // hide loading element
     },
-    // called when loading is in progresses
     function (xhr) {
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     },
-    // called when loading has errors
     function (error) {
-        console.error(error);
+      console.error(error);
     }
-);
+  );
 
 function animate() {
     requestAnimationFrame(animate);
