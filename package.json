@@ -1,13 +1,10 @@
 {
-  "name": "tauri-app",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "aev-software",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type":"module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "tauri": "tauri"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@tauri-apps/api": "^1",
@@ -17,9 +14,7 @@
     "socketio": "^1.0.0",
     "three": "^0.163.0"
   },
-  "devDependencies": {
-    "@tauri-apps/cli": "^1",
-    "typescript": "^5.4.4",
-    "vite": "^5.2.10"
-  }
+  "author": "",
+  "license": "ISC",
+  "description": ""
 }
