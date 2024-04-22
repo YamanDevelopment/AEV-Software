@@ -26,8 +26,4 @@ dist-ssr
 /src
 /src-tauri
 
-# src-tauri or some shit
-
-# src-tauri or some shit
-
 /src-tauri/*
