@@ -14,9 +14,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
 
-document.getElementById('container').innerHTML = ''; // make the container empty
 document.getElementById('container').style.width = '100%'; // make the container full width
-document.getElementById('container').appendChild(renderer.domElement);
+
 
 const scene = new THREE.Scene();
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -50,7 +49,9 @@ scene.add(pointLight);
 
 
 console.log(scene);
-
+let loading_bar = document.getElementById('loading-bar');
+loading_bar.style.width = '0%';
+let percent = document.getElementById('percent');
 // load a resource
 loader.load(
     './car.glb',
@@ -66,8 +67,14 @@ loader.load(
       });
       scene.add(gltf.scene);
     },
-    function (xhr) {
-      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    function (xhr) {    
+        console.log(xhr)
+        loading_bar.style.width = (xhr.loaded / xhr.total * 100) + '%';
+        percent.innerHTML = Math.floor(xhr.loaded / xhr.total * 100) + '%';
+            if(xhr.loaded / xhr.total == 1) {
+                document.getElementById('container').innerHTML = '';
+                document.getElementById('container').appendChild(renderer.domElement);
+            }
     },
     function (error) {
       console.error(error);

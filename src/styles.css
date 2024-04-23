@@ -119,3 +119,9 @@ button {
   font-size: 2em;
   z-index: 1000;
 }
+
+div#loading-bar {
+  /* width: 100px; */
+  height: 25px;
+  background-color: navy;
+}
