@@ -1,5 +1,0 @@
-  no cells detected
-  alerts    : not locked
-  current   : -62.1A
-  SOC       : 0%
-  uptime: 0 hour(s), 5 minute(s), 24 second(s)

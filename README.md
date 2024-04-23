@@ -1,15 +1,30 @@
 # aev-software
-____
 
-## Descritpion
+_____
 
-This repository contains the software for the Advanced Experimental Vehicles (AEV) club at Florida Atlantic University High School. The software is written by the club, specifically the software team, made up by in no specific order, Amarnath Patel, Jossaya Camille, Zachary Lopez, and Thandi Menelas. The software is written in JavaScript and is meant to be a Tauri application. The software is meant to be used with a bunch of custom hardware that the club has made. 
+## Description
 
-### Dependencies
+This repository contains the software for the Advanced Experimental Vehicles :car: (AEV) club at Florida Atlantic University Highschool :school:. The software is a Tauri application (a Rust framework for applications) and its frontend is written in JavaScript. The software is used to control the AEV's hardware, such as the motors, sensors, and other components. The software is also used to collect data from the AEV's sensors and store it. The software is written by, in no specific order, Amarnath Patel, Zachary Lopez, Jossaya Camille, and Thandi Menelas. 
 
-```npm install``` to install all the dependencies
+## Building
+This application was specifically written to be used on Arch Linux, specifically the ARM Arch Linux project, due to the CPU architecture of Raspberry Pi. The software can be built on other systems, but the Tauri preqrequesits may vary. On Arch Linux ARM, the following packages are required:
+```
+sudo pacman -Syu
+sudo pacman -S --needed \
+    webkit2gtk \
+    base-devel \
+    curl \
+    wget \
+    file \
+    openssl \
+    appmenu-gtk-module \
+    gtk3 \
+    libappindicator-gtk3 \
+    librsvg \
+    libvips
+```
 
-### LICENSE
+You will also need `rust` installed. Usually distrubuted with either `rustup` or the generic `rust` package on the Arch repositories through pacman or what ever helper of your choice.
 
-The LICENSE file is a custom license that the club has made. 
-
+Clone the repository, and run the following commands:
+`npm install && npm run tauri dev`
