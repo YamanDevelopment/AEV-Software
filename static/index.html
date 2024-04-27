@@ -5,12 +5,17 @@
     <link rel="stylesheet" href="/src/styles.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dash</title>
-    <script type="module" src="/src/main.ts" defer></script>
     <script src="./index.js" type="module" defer></script>
+    <script src="renderer.js" type="module"></script>
   </head>
 
   <body>
+
     <div id="container">
+      <div id="loading">
+        <div id="loading-bar"></div>
+        <p id="percent">%</p>
+      </div>
       
     </div>
   </body>
