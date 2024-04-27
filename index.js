@@ -36,11 +36,11 @@ io.on("connection", (socket) => {
   console.log(socket);
   try {
     const port = new SerialPort({
-      path: 'COM3',
+      path: '/dev/ttyUSB0',
       baudRate: 115200,
     });
     let interval = setInterval(() => {
-      const byteparser = port.pipe(new ByteLengthParser({length: bytecount}));
+      const byteparser = port.pipe(new ByteLengthParser({length: 250}));
       byteparser.on('data', (stream) => {
         let data = stream.toString();
         console.log(data);
