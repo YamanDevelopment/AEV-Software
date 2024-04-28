@@ -9,5 +9,5 @@ socket.on("connect", () => {
 
 socket.on('data', (data) => {
     let container = document.getElementById("container");
-    container.innerHTML = data;
+    console.log(data)
 })
