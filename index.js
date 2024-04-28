@@ -36,12 +36,7 @@ const io = new Server(httpServer);
 
 function getBatteryData(port) { 
   writeData('sh\n',port); //need to later add the command to switch to battery data
-  // let data = readData(port, 250);
-  let data = `  no cells detected
-  alerts    : not locked
-  current   : -62.1A
-  SOC       : 0%
-  uptime: 0 hour(s), 5 minute(s), 24 second(s)`;
+  let data = readData(port, 250);
   let battery_data = {};
   let data_arr = data.split('\n');
   let new_arr = []
@@ -76,9 +71,8 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
       console.log("Client disconnected");
     });  
-  }
-  catch (err) {
-    console.error(error);
+  } catch (err) {
+    console.log(error);
   }
   
 })
