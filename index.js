@@ -23,15 +23,6 @@ const io = new Server(httpServer);
     console.log('message written')
   });
 }
- function readData(port,bytecount) {
-  
-}
-
-function getBatteryData(port) { 
- 
-  return battery_data;
-}
-
 io.on("connection", (socket) => {
   console.log(socket);
   try {
