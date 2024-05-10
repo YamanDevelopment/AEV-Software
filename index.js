@@ -26,12 +26,12 @@ const io = new Server(httpServer);
 io.on("connection", (socket) => {
   console.log(socket);
   try {
+    let data;
     const port = new SerialPort({
       path: '/dev/ttyUSB0',
       baudRate: 115200,
     });
-    let interval = setInterval(() => {
-      const byteparser = port.pipe(new ByteLengthParser({length: 250}));
+    const byteparser = port.pipe(new ByteLengthParser({length: 250}));
       byteparser.on('data', (stream) => {
         let data = stream.toString();
         console.log(data);
@@ -51,14 +51,9 @@ io.on("connection", (socket) => {
         }
         socket.emit('data', battery_data);
       });
-      writeData('sh\n',port); //need to later add the command to switch to battery data
-      
-      let data;
-     
-     
-          
-      
-    }, 1000)
+      let interval = setInterval(() => {writeData('sh\n',port);}, 1000)
+       //need to later add the command to switch to battery data
+  
     // When a client connects, send battery data (github copilot wrote that)
   //
     socket.on("disconnect", () => {
@@ -68,7 +63,7 @@ io.on("connection", (socket) => {
     console.log(error);
   }
   
-})
+});
 
 
 
