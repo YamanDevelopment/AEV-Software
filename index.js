@@ -13,6 +13,7 @@ const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
+console.log('hi');
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {

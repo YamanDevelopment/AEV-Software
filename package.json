@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tauri": "tauri",
-    "start": "node index.js",
+    "start": "electron .",
     "build": "cd ./src-tauri/static && npx vite build"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@tauri-apps/cli": "^1.5.11"
+    "@tauri-apps/cli": "^1.5.11",
+    "electron": "^30.0.3"
   }
 }
