@@ -23,7 +23,9 @@ const createWindow = () => {
 app.whenReady().then(() => {
     createWindow()
   })
-console.log('hi');
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+  })
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {
