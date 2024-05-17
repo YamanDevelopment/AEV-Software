@@ -1,12 +1,14 @@
 // import { createServer } from 'http';
 // import { Server } from 'socket.io';
 // import { fileURLToPath } from 'url';
-import {dirname, join} from 'node:path';
+// import {__dirname, join} from 'node:path';
 // import { read } from 'fs';
 import { SerialPort } from 'serialport';
 import { ByteLengthParser } from '@serialport/parser-byte-length'
 import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
+import path from "node:path";
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const server = express();
 function writeData(data, port) {
