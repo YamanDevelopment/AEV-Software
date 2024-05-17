@@ -33,7 +33,7 @@ Clone the repository, and run the following commands:
 
 This repository utilizes the extremely lenient MIT License.
 ```
-Copyright (c) 2024 FAU-HS AEV Club
+Copyright (c) 2024 Yaman
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
