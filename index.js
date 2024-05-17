@@ -1,18 +1,14 @@
+// import { createServer } from 'http';
+// import { Server } from 'socket.io';
+// import { fileURLToPath } from 'url';
+import {dirname, join} from 'node:path';
+// import { read } from 'fs';
 import { SerialPort } from 'serialport';
 import { ByteLengthParser } from '@serialport/parser-byte-length'
-import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { fileURLToPath } from 'url';
-import {dirname, join} from 'node:path';
 import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
-import { read } from 'fs';
 
-
-const app = express();
-
-
-
+const server = express();
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {
@@ -59,8 +55,8 @@ ipcMain.on("connection", (event) => {
 });
 // Static files (html, css, js) (also wrote by copilot)
 
-app.use(express.static(path.join(__dirname, '/static')));
-app.listen(3000, () => {
+server.use(express.static(path.join(__dirname, '/static')));
+server.listen(3000, () => {
     console.log('Site is running on port 3000')
 })
 
