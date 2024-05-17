@@ -3,27 +3,25 @@
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "tauri": "tauri",
-    "start": "node index.js",
+    "start": "electron .",
     "build": "cd ./src-tauri/static && npx vite build"
   },
   "dependencies": {
-    "@tauri-apps/api": "^1",
     "express": "^4.19.2",
     "serialport": "^12.0.0",
     "socket.io": "^4.7.5",
     "socketio": "^1.0.0",
-    "three": "^0.163.0",
-    "webpack": "^5.91.0",
-    "webpack-cli": "^5.1.4"
+    "three": "^0.163.0"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "@tauri-apps/cli": "^1.5.11"
+    "electron": "^30.0.3",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   }
 }
