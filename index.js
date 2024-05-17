@@ -5,13 +5,12 @@ import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
 import {dirname, join} from 'node:path';
 import express from "express";
-import {app, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import { read } from 'fs';
 
 
-const expapp = express();
-const httpServer = createServer(expapp);
-const io = new Server(httpServer);
+const app = express();
+
 
 
 function writeData(data, port) {
@@ -22,8 +21,8 @@ function writeData(data, port) {
         console.log('message written')
     });
 }
-io.on("connection", (socket) => {
-    console.log(socket);
+ipcMain.on("connection", (event) => {
+    console.log(event);
     try {
         let data;
         const port = new SerialPort({
@@ -49,24 +48,21 @@ io.on("connection", (socket) => {
                 }
                 //if(item.includes('alerts')) {}
             }
-            socket.emit('data', battery_data);
+            event.reply('data', battery_data);
         });
         let interval = setInterval(() => {
             writeData('sh\n', port);
-        }, 1000)
-        //need to later add the command to switch to battery data
-        // When a client connects, send battery data (github copilot wrote that)
-        //
-        socket.on("disconnect", () => {
-            console.log("Client disconnected");
-        });
+        }, 1000);
     } catch (err) {
         console.log(error);
     }
 });
 // Static files (html, css, js) (also wrote by copilot)
 
-httpServer.listen(3000);
+app.use(express.static(path.join(__dirname, '/static')));
+app.listen(3000, () => {
+    console.log('Site is running on port 3000')
+})
 
 const carWindow = () => {
     const win = new BrowserWindow({
