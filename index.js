@@ -67,14 +67,14 @@ const carWindow = () => {
         width: 900,
         height: 700
     })
-    win.loadFile('http://localhost:3000/car')
+    win.loadFile('http://localhost:3000/car/index.html')
 }
 const bmsWindow = () => {
     const win = new BrowserWindow({
         width: 900,
         height: 700
     })
-    win.loadFile('http://localhost:3000/bms')
+    win.loadFile('http://localhost:3000/bms/index.html')
 }
 app.whenReady().then(() => {
     carWindow();
