@@ -5,15 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "tauri": "tauri",
-    "start": "electron .",
-    "build": "cd ./src-tauri/static && npx vite build"
+    "start": "electron ."
   },
   "dependencies": {
     "express": "^4.19.2",
     "serialport": "^12.0.0",
-    "socket.io": "^4.7.5",
-    "socketio": "^1.0.0",
     "three": "^0.163.0"
   },
   "author": "",
