@@ -5,14 +5,27 @@ import { Server } from 'socket.io';
 import { fileURLToPath } from 'url';
 import {dirname, join} from 'node:path';
 import express from "express";
-
+import {app, BrowserWindow} from 'electron';
 import { read } from 'fs';
 
 
-const app = express();
-const httpServer = createServer(app);
+const expapp = express();
+const httpServer = createServer(expapp);
 const io = new Server(httpServer);
 
+const createWindow = () => {
+    const win = new BrowserWindow({
+        width: 900,
+        height: 700
+    })
+    win.loadFile('./static/index.html')
+}
+app.whenReady().then(() => {
+    createWindow()
+  })
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') app.quit()
+  })
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {
@@ -64,9 +77,5 @@ io.on("connection", (socket) => {
     }
 });
 // Static files (html, css, js) (also wrote by copilot)
-const _dirname = dirname(fileURLToPath(import.meta.url));
-app.use('/', express.static(join(_dirname, "static")));
-app.get('/', (req, res) => {
-    res.sendFile(join(_dirname, '/static/index.html'));
-});
+
 httpServer.listen(3000);
