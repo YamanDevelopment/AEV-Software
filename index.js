@@ -9,6 +9,7 @@ import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from "node:path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
+console.log(__dirname);
 
 const server = express();
 function writeData(data, port) {
@@ -67,17 +68,17 @@ const carWindow = () => {
         width: 900,
         height: 700
     })
-    win.loadFile('http://localhost:3000/car/index.html')
+    win.loadURL('http://localhost:5173/car/index.html')
 }
 const bmsWindow = () => {
     const win = new BrowserWindow({
         width: 900,
         height: 700
     })
-    win.loadFile('http://localhost:3000/bms/index.html')
+    win.loadURL('http://localhost:5173/bms/index.html')
 }
 app.whenReady().then(() => {
-    carWindow();
+    carWindow();    
     bmsWindow();
   })
   app.on('window-all-closed', () => {
