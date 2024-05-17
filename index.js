@@ -13,19 +13,7 @@ const expapp = express();
 const httpServer = createServer(expapp);
 const io = new Server(httpServer);
 
-const createWindow = () => {
-    const win = new BrowserWindow({
-        width: 900,
-        height: 700
-    })
-    win.loadFile('./static/index.html')
-}
-app.whenReady().then(() => {
-    createWindow()
-  })
-  app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit()
-  })
+
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {
@@ -79,3 +67,25 @@ io.on("connection", (socket) => {
 // Static files (html, css, js) (also wrote by copilot)
 
 httpServer.listen(3000);
+
+const carWindow = () => {
+    const win = new BrowserWindow({
+        width: 900,
+        height: 700
+    })
+    win.loadFile('http://localhost:3000/car')
+}
+const bmsWindow = () => {
+    const win = new BrowserWindow({
+        width: 900,
+        height: 700
+    })
+    win.loadFile('http://localhost:3000/bms')
+}
+app.whenReady().then(() => {
+    carWindow();
+    bmsWindow();
+  })
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin')  app.quit()
+  })
