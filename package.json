@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "electron ."
+        "start": "electron .",
+        "react": "react-scripts start"
     },
     "dependencies": {
         "express": "^4.19.2",

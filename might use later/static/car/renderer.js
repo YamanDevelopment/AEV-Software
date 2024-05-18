@@ -1,15 +1,8 @@
 // Import necessary modules
-import * as THREE from 'three';
-//import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+
 
 // Load a GLB file
-const loader = new GLTFLoader();
 
-// setup //
-const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
-renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.style.margin = '0';
 document.body.style.overflow = 'hidden';
