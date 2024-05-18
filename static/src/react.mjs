@@ -1,6 +1,6 @@
 import React from 'react';
-import { HashRouter as Router, Route, Switch } from 'react-router-dom';
-import { ipcRenderer } from "electron";
+import { HashRouter as Router, Route } from 'react-router-dom';
+import {io} from "socket.io-client"
 import { useState } from 'react';
 import './App.css';
 import * as THREE from 'three';
