@@ -1,6 +1,6 @@
 import React from 'react';
 import { HashRouter as Router, Route } from 'react-router-dom';
-import {io} from "socket.io-client"
+import {io} from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
 import { useState } from 'react';
 import './App.css';
 import * as THREE from 'three';

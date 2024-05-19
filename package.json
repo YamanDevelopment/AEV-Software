@@ -12,15 +12,12 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "react-router-dom": "^6.23.1",
-    "serialport": "^12.0.0",
-    "three": "^0.163.0"
+    "serialport": "^12.0.0"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "react": "^18.3.1",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4"
   },

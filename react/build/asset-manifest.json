@@ -1,0 +1,12 @@
+{
+  "files": {
+    "main.css": "/jeebuscrossaint/aev-software/static/css/main.31d6cfe0.css",
+    "main.js": "/jeebuscrossaint/aev-software/static/js/main.d358671f.js",
+    "index.html": "/jeebuscrossaint/aev-software/index.html",
+    "main.d358671f.js.map": "/jeebuscrossaint/aev-software/static/js/main.d358671f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31d6cfe0.css",
+    "static/js/main.d358671f.js"
+  ]
+}
