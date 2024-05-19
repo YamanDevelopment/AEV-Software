@@ -10,6 +10,7 @@ import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from "node:path";
 import { isDev } from 'electron-is-dev';
+import { ipcMain } from 'electron';
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 console.log(__dirname);
 
@@ -75,7 +76,7 @@ function createWindow(route = '/') {
             enableRemoteModule: true,
           }
     })
-    isDev ? win.loadURL(`https://localhost:3000${route}`): win.loadURL(`file://${path.join(__dirname, '/static/index.html')}#${route}`)
+    false ? win.loadURL(`https://localhost:3000${route}`): win.loadURL(`file://${path.join(__dirname, '/react/build/index.html')}#${route}`)
 }
 
 app.whenReady().then(() => {
