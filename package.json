@@ -1,7 +1,7 @@
 {
   "name": "aev-software",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron .",
@@ -12,7 +12,8 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
-    "serialport": "^12.0.0"
+    "serialport": "^12.0.0",
+    "socket.io": "^4.7.5"
   },
   "author": "",
   "license": "ISC",
