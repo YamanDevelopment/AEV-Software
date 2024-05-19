@@ -13,6 +13,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 console.log(__dirname);
 
 const server = express();
+const httpServer = createServer(server);
+const io = new Server(httpServer);
 function writeData(data, port) {
     port.write(data, function(err) {
         if (err) {
@@ -21,7 +23,7 @@ function writeData(data, port) {
         console.log('message written')
     });
 }
-ipcMain.on("connection", (event) => {
+io.on("connection", (event) => {
     console.log(event);
     try {
         let data;

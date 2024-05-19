@@ -7,22 +7,24 @@ import * as THREE from 'three';
 //import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {ipcRenderer} from 'electron';
 
 
 function BatteryData() {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
-    ipcRenderer.send('connection');
-    ipcRenderer.on('data', (data) => {
-        setData(JSON.stringify(data));
+    const socket = io('http://localhost:3000');
+    socket.on('data', (data) => {
+        setData(data);
     });
-    ipcRenderer.on('error', (error) => {
-        setError(error);
+    socket.on('error', (err) => {
+        setError(err);
     });
     return (
         <div id="container">
-            {data}
+            {JSON.stringify(data)}
+            {error ?
+            (<><p>There has been an error:</p>
+            <p>{String(error)}</p></>) : null}
         </div>
         
     );
@@ -95,8 +97,10 @@ export default function App() {
     return (
         <Router>
             <Routes>
+                
                 <Route path="/bms" element={<BatteryData />} />
                 <Route path="/car" element={<Car />} />
+                <Route index element={<><div>Welcome to the dashboard</div></>}></Route>
             </Routes>
         </Router>
     );
