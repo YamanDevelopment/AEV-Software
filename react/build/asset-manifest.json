@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/jeebuscrossaint/aev-software/static/css/main.31d6cfe0.css",
-    "main.js": "/jeebuscrossaint/aev-software/static/js/main.d358671f.js",
-    "index.html": "/jeebuscrossaint/aev-software/index.html",
-    "main.d358671f.js.map": "/jeebuscrossaint/aev-software/static/js/main.d358671f.js.map"
+    "main.css": "./static/css/main.31d6cfe0.css",
+    "main.js": "./static/js/main.49e7415f.js",
+    "index.html": "./index.html",
+    "main.49e7415f.js.map": "./static/js/main.49e7415f.js.map"
   },
   "entrypoints": [
     "static/css/main.31d6cfe0.css",
-    "static/js/main.d358671f.js"
+    "static/js/main.49e7415f.js"
   ]
 }

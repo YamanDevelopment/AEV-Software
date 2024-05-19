@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import {io} from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
 import { useState } from 'react';
 import './App.css';
@@ -7,6 +7,7 @@ import * as THREE from 'three';
 //import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {ipcRenderer} from 'electron';
 
 
 function BatteryData() {

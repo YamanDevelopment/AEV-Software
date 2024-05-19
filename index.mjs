@@ -1,6 +1,6 @@
   import { createServer } from 'http';
 import { Server } from 'socket.io';
-// import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'url';
 import {join} from 'node:path';
 // import { read } from 'fs';
 
@@ -9,9 +9,7 @@ import { ByteLengthParser } from '@serialport/parser-byte-length'
 import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from "node:path";
-import { isDev } from 'electron-is-dev';
-import { ipcMain } from 'electron';
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 console.log(__dirname);
 
 const server = express();
