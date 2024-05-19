@@ -23,46 +23,48 @@ function writeData(data, port) {
         console.log('message written')
     });
 }
-io.on("connection", (event) => {
-    console.log(event);
-    try {
-        let data;
-        const port = new SerialPort({
-            path: '/dev/ttyUSB0',
-            baudRate: 115200,
-        });
-        const byteparser = port.pipe(new ByteLengthParser({
-            length: 250
-        }));
-        byteparser.on('data', (stream) => {
-            let data = stream.toString();
-            console.log(data);
-            let battery_data = {};
-            let data_arr = data.split('\n');
-            let new_arr = []
-            for (let item of data_arr) {
-                item = item.trim();
-                item = item.split(' ');
-                item = item.filter((el) => el != '');
-                new_arr.push(item);
-                if (item.includes(':') && !(item.includes('uptime')) && !(item.includes('alerts'))) {
-                    battery_data[item[0]] = item[2];
-                }
-                //if(item.includes('alerts')) {}
+const port = new SerialPort({
+    path: '/dev/ttyUSB0',
+    baudRate: 115200,
+});
+port.on('error', (err) => {
+    io.emit('error', err);
+    const byteparser = port.pipe(new ByteLengthParser({
+        length: 250
+    }));
+    byteparser.on('data', (stream) => {
+        let data = stream.toString();
+        console.log(data);
+        let battery_data = {};
+        let data_arr = data.split('\n');
+        let new_arr = []
+        for (let item of data_arr) {
+            item = item.trim();
+            item = item.split(' ');
+            item = item.filter((el) => el != '');
+            new_arr.push(item);
+            if (item.includes(':') && !(item.includes('uptime')) && !(item.includes('alerts'))) {
+                battery_data[item[0]] = item[2];
             }
-            event.reply('data', battery_data);
-        });
+            //if(item.includes('alerts')) {}
+        }
+        io.emit('data', battery_data);
+    });
+});
+io.on("connection", (event) => {
+    try {
         let interval = setInterval(() => {
             writeData('sh\n', port);
         }, 1000);
     } catch (err) {
-        console.log(error);
+        console.log(err);
+        io.emit('error', err);
     }
 });
 // Static files (html, css, js) (also wrote by copilot)
 
-server.use(express.static(path.join(__dirname, '/static')));
-server.listen(3000, () => {
+
+httpServer.listen(3000, () => {
     console.log('Site is running on port 3000')
 })
 

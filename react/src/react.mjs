@@ -32,6 +32,7 @@ function BatteryData() {
 function Car() {
     const [loading, setLoading] = useState(0);
     const loader = new GLTFLoader();
+    const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
     renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
     const camera = new THREE.PerspectiveCamera(
@@ -59,7 +60,7 @@ function Car() {
     scene.add(pointLight);
 
 // setup //
-    const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
+    
     renderer.setSize(window.innerWidth, window.innerHeight);
     loader.load(
         './car.glb',
