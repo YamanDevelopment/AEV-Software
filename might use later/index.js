@@ -9,6 +9,7 @@ import { ByteLengthParser } from '@serialport/parser-byte-length'
 import express from "express";
 import {app, BrowserWindow, ipcMain} from 'electron';
 import path from "node:path";
+import { isDev } from 'electron-is-dev';
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 console.log(__dirname);
 
@@ -64,23 +65,22 @@ server.listen(3000, () => {
     console.log('Site is running on port 3000')
 })
 
-const carWindow = () => {
+function createWindow(route = '/') {
     const win = new BrowserWindow({
         width: 900,
-        height: 700
+        height: 700,
+        webPreferences: {
+            nodeIntegration: true,
+            contextIsolation: false,
+            enableRemoteModule: true,
+          }
     })
-    win.loadURL('http://localhost:5173/car/index.html')
+    isDev ? win.loadURL(`https://localhost:3000${route}`): win.loadURL(`file://${path.join(__dirname, '/static/index.html')}#${route}`)
 }
-const bmsWindow = () => {
-    const win = new BrowserWindow({
-        width: 900,
-        height: 700
-    })
-    win.loadURL('http://localhost:5173/bms/index.html')
-}
+
 app.whenReady().then(() => {
-    carWindow();    
-    bmsWindow();
+    createWindow('/car');
+    createWindow('/bms');
   })
   app.on('window-all-closed', () => {
     if (process.platform !== 'darwin')  app.quit()

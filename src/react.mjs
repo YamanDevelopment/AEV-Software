@@ -1,4 +1,3 @@
-import { BrowserRouter } from "react-router-dom";
 import React from 'react';
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { ipcRenderer } from "electron";
@@ -6,7 +5,7 @@ import { useState } from 'react';
 import './App.css';
 import * as THREE from 'three';
 //import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
 
@@ -94,10 +93,10 @@ function Car() {
 export default function App() {
     return (
         <Router>
-            <Switch>
+            <Routes>
                 <Route path="/bms" element={<BatteryData />} />
                 <Route path="/car" element={<Car />} />
-            </Switch>
+            </Routes>
         </Router>
     );
 }
