@@ -1,8 +1,9 @@
 import React from 'react';
 import { HashRouter as Router, Route, Routes } from 'react-router-dom';
 import {io} from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js"
-import { useState } from 'react';
+import { useState, useRef, useEffect} from 'react';
 import './App.css';
+
 import * as THREE from 'three';
 //import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -17,6 +18,7 @@ function BatteryData() {
         setData(data);
     });
     socket.on('error', (err) => {
+        console.error(err);
         setError(err);
     });
     return (
@@ -30,69 +32,61 @@ function BatteryData() {
     );
 }
 function Car() {
+    const mountRef = useRef(null);
     const [loading, setLoading] = useState(0);
-    const loader = new GLTFLoader();
-    const renderer = new THREE.WebGLRenderer({ alpha: true , antialias: true});
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    const camera = new THREE.PerspectiveCamera(
-        0.35,
-        window.innerWidth / window.innerHeight,
-        1,
-        10000
-    );
 
-    camera.position.set(500, 500, 500);
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.update();
-    renderer.render(scene, camera);
+    useEffect(() => {
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        const loader = new GLTFLoader();
 
-    /// lighting ///
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
 
-    const light = new THREE.AmbientLight(0xffffff);
-    light.position.set(10, 10, 10);
-    scene.add(light);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(0, 1, 0); // set the position of the light
-    scene.add(directionalLight);
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 10, 0); // set the position of the light
-    scene.add(pointLight);
+        camera.position.z = 5;
 
-// setup //
-    
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    loader.load(
-        './car.glb',
-        function (gltf) {
-          let content = gltf.scene;
-          content.traverse(function (child) {
-            if (child instanceof THREE.Mesh) {
-              if (child.material.map) {
-                child.material.roughness = 1;
-                child.material.metalness = 0;
-              }
-            }
-          });
-          scene.add(gltf.scene);
-        },
-        function (xhr) {    
-            console.log(xhr);
-            setLoading(xhr.loaded / xhr.total * 100);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.update();
 
-        },
-        function (error) {
-          console.error(error);
+        loader.load(
+            process.env.PUBLIC_URL + '/car.glb',
+            (gltf) => {
+                scene.add(gltf.scene);
+                animate();
+            },
+            (xhr) => {
+                setLoading((xhr.loaded / xhr.total) * 100);
+            },
+            (error) => {
+                console.error('An error happened', error);
+            },
+        );
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        };
+
+        if (mountRef.current) {
+            mountRef.current.appendChild(renderer.domElement);
         }
-      );
+
+        return () => {
+            if (mountRef.current) {
+                mountRef.current.removeChild(renderer.domElement);
+            }
+        };
+    }, []);
+
     return (
         <div id="container">
             <div id="loading-bar"></div>
             <div id="percent">{loading + "%"}</div>
-            {renderer.domElement}
+            <div ref={mountRef}></div>
         </div>
     );
-    
 }
 export default function App() {
     return (
