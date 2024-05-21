@@ -27,6 +27,8 @@ function BatteryData() {
             {error ?
             (<><p>There has been an error:</p>
             <p>{String(error)}</p></>) : null}
+            <button onClick={() => {window.location.reload()}}>Refresh</button>
+
         </div>
         
     );
