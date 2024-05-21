@@ -73,6 +73,7 @@ io.on("connection", (event) => {
         io.emit('error', 'Port is not open');
     }
 });
+
 // Static files (html, css, js) (also wrote by copilot)
 
 
