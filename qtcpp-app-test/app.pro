@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = MyApp
+TARGET = host
 INCLUDEPATH += .
 
 # Input
