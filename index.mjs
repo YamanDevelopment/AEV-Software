@@ -75,6 +75,7 @@ io.on("connection", (event) => {
 });
 
 
+
 // Static files (html, css, js) (also wrote by copilot)
 
 
