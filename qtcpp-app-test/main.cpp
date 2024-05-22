@@ -1,23 +1,42 @@
 #include <QApplication>
+#include <QMainWindow>
+#include <QPlainTextEdit>
 #include <QSerialPort>
+#include <QTimer>
 
-int main(int argc, char *argv[])
-{
-    QApplication a(argc, argv);
-
-    QSerialPort serialPort;
-    serialPort.setPortName("/dev/ttyUSB0");
-    serialPort.setBaudRate(QSerialPort::Baud115200); // jossaya beggin chatgpt fo dis fr
-    serialPort.setDataBits(QSerialPort::Data8);
-    serialPort.setParity(QSerialPort::NoParity);
-    serialPort.setStopBits(QSerialPort::OneStop);
-    serialPort.setFlowControl(QSerialPort::NoFlowControl);
-
-    if (serialPort.open(QIODevice::ReadWrite)) {
-        serialPort.write("sh\n");
-    } else {
-        qDebug() << "Error: " << serialPort.errorString();
+class MainWindow : public QMainWindow {
+public:
+    MainWindow() {
+        setCentralWidget(&textEdit);
+        connect(&serialPort, &QSerialPort::readyRead, this, &MainWindow::readData);
+        connect(&timer, &QTimer::timeout, this, &MainWindow::writeData);
+        serialPort.setPortName("/dev/ttyUSB0");
+        serialPort.setBaudRate(QSerialPort::Baud115200);
+        if (!serialPort.open(QIODevice::ReadWrite)) {
+            textEdit.appendPlainText("Connection Failed");
+        } else {
+            timer.start(1000);
+        }
     }
 
-    return a.exec();
+private slots:
+    void readData() {
+        textEdit.appendPlainText(serialPort.readAll());
+    }
+
+    void writeData() {
+        serialPort.write("sh\n");
+    }
+
+private:
+    QPlainTextEdit textEdit;
+    QSerialPort serialPort;
+    QTimer timer;
+};
+
+int main(int argc, char *argv[]) {
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+    return app.exec();
 }
