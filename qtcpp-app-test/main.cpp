@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 
     QSerialPort serialPort;
     serialPort.setPortName("/dev/ttyUSB0");
-    serialPort.setBaudRate(QSerialPort::Baud9600);
+    serialPort.setBaudRate(QSerialPort::Baud115200); // jossaya beggin chatgpt fo dis fr
     serialPort.setDataBits(QSerialPort::Data8);
     serialPort.setParity(QSerialPort::NoParity);
     serialPort.setStopBits(QSerialPort::OneStop);
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     if (serialPort.open(QIODevice::ReadWrite)) {
         serialPort.write("sh\n");
     } else {
-        // handle error
+        qDebug() << "Error: " << serialPort.errorString();
     }
 
     return a.exec();
