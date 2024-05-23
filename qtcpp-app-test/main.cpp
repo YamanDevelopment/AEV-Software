@@ -111,6 +111,10 @@ private slots:
         Qt3DCore::QEntity *modelEntity = new Qt3DCore::QEntity(&rootEntity);
         Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
         mesh->setSource(QUrl::fromLocalFile("./car.glb"));
+if (mesh->status() != Qt3DRender::QMesh::Ready) {
+    qDebug() << "Failed to load model";
+    return;
+}
         modelEntity->addComponent(mesh);
 
         // Material
