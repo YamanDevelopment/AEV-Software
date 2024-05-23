@@ -57,4 +57,4 @@ SOFTWARE.
 
 
 
-hol on for cpp u need qt5-serialport qt5-3d qt6-3d qt6-shadertools
+hol on for cpp u need qt5-serialport qt5-3d qt6-3d qt6-shadertools qt5-base qt6-base qt5-wayland qt6-wayland
