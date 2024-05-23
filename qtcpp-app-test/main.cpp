@@ -56,6 +56,8 @@ int main(int argc, char *argv[]) {
 #include <Qt3DCore/QEntity>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <Qt3DRender/QPointLight>
+#include <Qt3DCore/QTransform>
 
 class MainWindow : public QMainWindow {
 public:
@@ -117,6 +119,16 @@ private slots:
 
         // Set root object of the scene
         view.setRootEntity(&rootEntity);
+
+        // Lighting
+        Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(&rootEntity);
+        Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
+        light->setColor("white");
+        light->setIntensity(1);
+        lightEntity->addComponent(light);
+        Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform(lightEntity);
+        lightTransform->setTranslation(cameraEntity->position());
+        lightEntity->addComponent(lightTransform);
     }
 
     void setupSerialPort() {
