@@ -108,7 +108,7 @@ private slots:
         // 3D model
         Qt3DCore::QEntity *modelEntity = new Qt3DCore::QEntity(&rootEntity);
         Qt3DRender::QMesh *mesh = new Qt3DRender::QMesh;
-        mesh->setSource(QUrl::fromLocalFile("path_to_your_file.glb"));
+        mesh->setSource(QUrl::fromLocalFile("car.glb"));
         modelEntity->addComponent(mesh);
 
         // Material
