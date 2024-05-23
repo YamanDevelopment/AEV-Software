@@ -14,10 +14,10 @@ EQ            = =
 
 CC            = gcc
 CXX           = g++
-DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_SERIALPORT_LIB -DQT_CORE_LIB
+DEFINES       = -DQT_NO_DEBUG -DQT_WIDGETS_LIB -DQT_3DEXTRAS_LIB -DQT_3DRENDER_LIB -DQT_3DINPUT_LIB -DQT_3DLOGIC_LIB -DQT_3DCORE_LIB -DQT_GUI_LIB -DQT_SERIALPORT_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -flto -fno-fat-lto-objects -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -flto -fno-fat-lto-objects -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
-INCPATH       = -I. -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/QtGui -I/usr/include/qt/QtSerialPort -I/usr/include/qt/QtCore -I. -I/usr/lib/qt/mkspecs/linux-g++
+INCPATH       = -I. -I/usr/include/qt -I/usr/include/qt/QtWidgets -I/usr/include/qt/Qt3DExtras -I/usr/include/qt/Qt3DRender -I/usr/include/qt/Qt3DInput -I/usr/include/qt/Qt3DLogic -I/usr/include/qt/Qt3DCore -I/usr/include/qt/QtGui -I/usr/include/qt/QtSerialPort -I/usr/include/qt/QtNetwork -I/usr/include/qt/QtCore -I. -I/usr/lib/qt/mkspecs/linux-g++
 QMAKE         = /usr/sbin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -39,8 +39,8 @@ COMPRESS      = gzip -9f
 DISTNAME      = host1.0.0
 DISTDIR = /mnt/c/Users/amarnath/aev-software/qtcpp-app-test/.tmp/host1.0.0
 LINK          = g++
-LFLAGS        = -Wl,-O1 -pipe -O2 -flto=16 -fno-fat-lto-objects -fuse-linker-plugin -fPIC
-LIBS          = $(SUBLIBS) /usr/lib/libQt5Widgets.so /usr/lib/libQt5Gui.so /usr/lib/libQt5SerialPort.so /usr/lib/libQt5Core.so -lGL -lpthread   
+LFLAGS        = -Wl,-O1 -pipe -O2 -flto=16 -fno-fat-lto-objects -fuse-linker-plugin -Wl,-rpath-link,/usr/lib -fPIC
+LIBS          = $(SUBLIBS) /usr/lib/libQt5Widgets.so /usr/lib/libQt53DExtras.so /usr/lib/libQt53DRender.so /usr/lib/libQt53DInput.so /usr/lib/libQt53DLogic.so /usr/lib/libQt53DCore.so /usr/lib/libQt5Gui.so /usr/lib/libQt5SerialPort.so /usr/lib/libQt5Network.so /usr/lib/libQt5Core.so -lGL -lpthread   
 AR            = gcc-ar cqs
 RANLIB        = 
 SED           = sed
@@ -63,6 +63,30 @@ DIST          = /usr/lib/qt/mkspecs/features/spec_pre.prf \
 		/usr/lib/qt/mkspecs/common/g++-base.conf \
 		/usr/lib/qt/mkspecs/common/g++-unix.conf \
 		/usr/lib/qt/mkspecs/qconfig.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3danimation.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3danimation_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3drender_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_concurrent.pri \
@@ -177,6 +201,30 @@ Makefile: app.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/f
 		/usr/lib/qt/mkspecs/common/g++-base.conf \
 		/usr/lib/qt/mkspecs/common/g++-unix.conf \
 		/usr/lib/qt/mkspecs/qconfig.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3danimation.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3danimation_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dcore.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dcore_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dextras.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dextras_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dinput.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dinput_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquick.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquick_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d_private.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3drender.pri \
+		/usr/lib/qt/mkspecs/modules/qt_lib_3drender_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/qt/mkspecs/modules/qt_lib_concurrent.pri \
@@ -281,6 +329,30 @@ Makefile: app.pro /usr/lib/qt/mkspecs/linux-g++/qmake.conf /usr/lib/qt/mkspecs/f
 /usr/lib/qt/mkspecs/common/g++-base.conf:
 /usr/lib/qt/mkspecs/common/g++-unix.conf:
 /usr/lib/qt/mkspecs/qconfig.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3danimation.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3danimation_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dcore.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dcore_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dextras.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dextras_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dinput.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dinput_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dlogic_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquick.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquick_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickanimation_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickextras_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickinput_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickrender_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3dquickscene2d_private.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3drender.pri:
+/usr/lib/qt/mkspecs/modules/qt_lib_3drender_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_accessibility_support_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_bootstrap_private.pri:
 /usr/lib/qt/mkspecs/modules/qt_lib_concurrent.pri:
@@ -394,7 +466,7 @@ distdir: FORCE
 
 
 clean: compiler_clean 
-	-$(DEL_FILE) $(OBJECTS) host
+	-$(DEL_FILE) $(OBJECTS)
 	-$(DEL_FILE) *~ core *.core
 
 
