@@ -1,19 +1,20 @@
 #include <QApplication>
 #include <QMainWindow>
-#include <QPlainTextEdit>
+#include <QLabel>
 #include <QSerialPort>
 #include <QTimer>
 
 class MainWindow : public QMainWindow {
 public:
     MainWindow() {
-        setCentralWidget(&textEdit);
+        label.setTextFormat(Qt::PlainText);
+        setCentralWidget(&label);
         connect(&serialPort, &QSerialPort::readyRead, this, &MainWindow::readData);
         connect(&timer, &QTimer::timeout, this, &MainWindow::writeData);
         serialPort.setPortName("/dev/ttyUSB0");
         serialPort.setBaudRate(QSerialPort::Baud115200);
         if (!serialPort.open(QIODevice::ReadWrite)) {
-            textEdit.appendPlainText("Connection Failed");
+            label.setText("Connection Failed");
         } else {
             timer.start(1000);
         }
@@ -21,7 +22,7 @@ public:
 
 private slots:
     void readData() {
-        textEdit.appendPlainText(serialPort.readAll());
+        label.setText(serialPort.readAll());
     }
 
     void writeData() {
@@ -29,7 +30,7 @@ private slots:
     }
 
 private:
-    QPlainTextEdit textEdit;
+    QLabel label;
     QSerialPort serialPort;
     QTimer timer;
 };
