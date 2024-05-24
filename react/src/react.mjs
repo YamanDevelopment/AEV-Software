@@ -13,25 +13,14 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 function BatteryData() {
     const [data, setData] = useState({});
     const [error, setError] = useState(null);
-    if(window.electron) {
-        window.electron.on("data", (content) => {
-            setData(content);
-        });
-        
-        window.electron.on("error", (error) => {
-            setError(error);
-        })
-    }
-    else {
-        const socket = io('http://localhost:3000');
-        socket.on('data', (data) => {
-            setData(data);
-        });
-        socket.on('error', (err) => {
-            console.error(err);
-            setError(err);
-        });
-    }
+    const socket = io('http://localhost:3000');
+    socket.on('data', (data) => {
+        setData(data);
+    });
+    socket.on('error', (err) => {
+        console.error(err);
+        setError(err);
+    });
     return (
         <div id="container">
             {JSON.stringify(data)}
