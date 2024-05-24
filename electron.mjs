@@ -1,5 +1,6 @@
 import {app, BrowserWindow} from 'electron';
-
+import { fileURLToPath } from 'url';
+import path from 'path';
 // global variables
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 function createWindow(route = '/') { //creates electron windows
@@ -12,8 +13,9 @@ function createWindow(route = '/') { //creates electron windows
             preload: path.join(__dirname, 'preload.js')
           }
         });
+        win.loadURL(`file://${path.join(__dirname, '/react/build/index.html')}#${route}`);
     }
-    win.loadURL(`file://${path.join(__dirname, '/react/build/index.html')}#${route}`);
+    
 
 app.whenReady().then(() => {
     createWindow('/car');
