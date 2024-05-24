@@ -22,7 +22,7 @@ function BatteryData() {
             console.error(err);
             setError(err);
         });
-    })
+    },[]);
     return (
         <div id="container">
             {JSON.stringify(data)}
