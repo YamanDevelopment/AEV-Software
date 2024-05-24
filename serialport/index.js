@@ -34,7 +34,7 @@ port.on('error', (err) => {io.emit('error', err)});
 io.on('connection', (socket) => {
     console.log('New connection!');
     connections.push(socket);
-    if(writeData()) {
+    if(writeData("sh\n")) {
         let interval = setInterval(() => {
             if(connections.length < 1) {
                 clearInterval(interval);
