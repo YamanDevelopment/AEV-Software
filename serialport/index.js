@@ -1,5 +1,5 @@
 import { SerialPort } from 'serialport';
-import { ByteLengthParser } from '@serialport/parser-byte-length';
+import { DelimiterParser } from '@serialport/parser-delimiter';
 import { Server } from 'socket.io';
 import {createServer} from 'http';
 import express from 'express';
@@ -8,8 +8,8 @@ const port = new SerialPort({
     path: '/dev/ttyUSB0',
     baudRate: 115200,
 });
-const byteparser = port.pipe(new ByteLengthParser({
-    length: 500
+const byteparser = port.pipe(new DelimiterParser({
+    delimiter: 'sh'
 }));
 port.open();
 const server = express(); // socketio server used as fallback in case of electron failure
@@ -19,6 +19,7 @@ const connections = [];
 
 byteparser.on('data', (stream) => { //reads data
     let data = stream.toString().split('\n');
+    console.log(data);
     let battery_data = {};
     for (let item of data) {
         item = item.trim().split(' ');
