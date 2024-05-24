@@ -48,11 +48,30 @@ function Car() {
 
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
-
+        
         camera.position.z = 5;
 
         const controls = new OrbitControls(camera, renderer.domElement);
         controls.update();
+
+        /// lighting ///
+        scene.background = new THREE.Color(0x808080)
+        const light = new THREE.AmbientLight(0xffffff);
+        light.position.set(-30, 30, 0);
+        scene.add(light);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        for(let n = 0; n < 23; n++) {
+            const lights = [];
+            lights[n] = new THREE.DirectionalLight(0xffffff, 1);
+            lights[n].position.set(-10-n,1,-10-n)
+        }
+        directionalLight.position.set(-10, 1, -10); // set the position of the light
+        directionalLight.position.set(-10, 1, -10); // set the position of the light
+        
+        scene.add(directionalLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+        pointLight.position.set(-10, -10, -100); // set the position of the light
+        scene.add(pointLight);
 
         loader.load(
             process.env.PUBLIC_URL + '/car.glb',
