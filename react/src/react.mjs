@@ -56,14 +56,18 @@ function Car() {
 
         /// lighting ///
         scene.background = new THREE.Color(0x808080)
-        const light = new THREE.AmbientLight(0xffffff);
-        light.position.set(-30, 30, 0);
+        const light = new THREE.AmbientLight(0xffffff, 50);
+        light.position.set(5, 5, 5);
         scene.add(light);
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 30);
+        
         for(let n = 0; n < 23; n++) {
             const lights = [];
-            lights[n] = new THREE.DirectionalLight(0xffffff, 1);
-            lights[n].position.set(-10-n,1,-10-n)
+            const helper = [];
+            lights[n] = new THREE.DirectionalLight(0xffffff, 5);
+            lights[n].position.set(1+n,10+n,5);
+            helper[n] = new THREE.DirectionalLightHelper( lights[n], 5 );
+            scene.add( helper[n] );
         }
         directionalLight.position.set(-10, 1, -10); // set the position of the light
         directionalLight.position.set(-10, 1, -10); // set the position of the light
