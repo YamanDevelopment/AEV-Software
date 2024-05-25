@@ -25,34 +25,50 @@ const connections = [];
 
 class BmsData {
     constructor(data) {
-        console.log(data);
-        const voltagere = new RegExp("\\s+voltage\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
-        const cellsre = new RegExp("\\s+cells\\s+:\\s[0-9]{2}.+");
-        const meanre = new RegExp("\\s+mean\\s+:\\s[0-9]+\\.[0-9]+v");
-        const stddevre = new RegExp("\\s+std dev\\s+:\\s[0-9]+\\.[0-9]+v");
-        const currentre = new RegExp("\\s+current\\s+:\\s.[0-9]+\\.[0-9]+A");
-        const socre = new RegExp("\\s+soc\\s+:\\s[0-9].*[0-9]*%");
-        for(let item of data) {
-            console.log(item);
-            if(voltagere.test(item)) {
-                this.voltage = item.match(/[0-9]{2}\.[0-9]{2}/)[0];
-            }
-            else if(cellsre.test(item)) {
-                this.cells = item.match(/[0-9]{2}/)[0];
-            }
-            else if(meanre.test(item)) {
-                this.mean = item.match(/[0-9]{2}\.[0-9]{2}/)[0];
-            }
-            else if(stddevre.test(item)) {
-                this.stddev = item.match(/[0-9]{2}\.[0-9]{2}/)[0];
-            }
-            else if(currentre.test(item)) {
-                this.current = item.match(/.[0-9]+.[0-9]+/)[0];
-            }
-            else if(socre.test(item)) {
-                this.soc = item.match(/[0-9].*[0-9]*/)[0];
-            }
+        // Trim the first two elements of the array and the last element of the array (useless bc first is "\r" and last is "mcu> ")
+        data.shift();
+        data.shift();
+        data.pop();
+
+        // Split each element by the colon and trim the whitespace from the beginning and end
+        data = data.map((element) => {
+            return element.split(':').map((item) => {
+                return item.trim();
+            });
+        });
+
+        // Remove all instances of \r from the array
+        data = data.map((element) => {
+            return element.map((item) => {
+                return item.replace(/\r/g, '');
+            });
+        });
+
+        // Trim spaces in all of the keys
+        data = data.map((element) => {
+            return element.map((item) => {
+                return item.replace(/\s/g, '');
+            });
+        });
+
+        const dataObj = {};
+        for (let item of data) {
+            dataObj[item[0]] = item[1];
         }
+
+        // Trim all non-numbers from dataObj.uptime
+        let oldUptime = dataObj.uptime.split("");
+        let newUptime = [];
+        for (let i = 0; i < oldUptime.length; i++) {
+            if (isNaN(oldUptime[i])) {
+                if (oldUptime[i].match(",")) {
+                    newUptime.push(oldUptime[i]);
+                }
+            } else {
+                newUptime.push(oldUptime[i]);
+            }
+        }        
+        dataObj.uptime = newUptime.join("").split(",");
     }
 }
 
