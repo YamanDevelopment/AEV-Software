@@ -1,31 +1,39 @@
 import { SerialPort } from 'serialport';
-import { ByteLengthParser } from '@serialport/parser-byte-length';
+import { DelimiterParser } from '@serialport/parser-delimiter';
 import { Server } from 'socket.io';
 import {createServer} from 'http';
 import express from 'express';
+import cors from 'cors';
+
+
 
 const port = new SerialPort({
     path: '/dev/ttyUSB0',
     baudRate: 115200,
 });
-const byteparser = port.pipe(new ByteLengthParser({
-    length: 500
+const byteparser = port.pipe(new DelimiterParser({
+    delimiter: 'sh'
 }));
 port.open();
 const server = express(); // socketio server used as fallback in case of electron failure
+server.use(cors())
 const httpServer = createServer(server);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {cors: {
+    origin: '*',
+  }});
 const connections = [];
 
 class BmsData {
     constructor(data) {
+        console.log(data);
         const voltagere = new RegExp("\\s+voltage\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
         const cellsre = new RegExp("\\s+cells\\s+:\\s[0-9]{2}.+");
         const meanre = new RegExp("\\s+mean\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
-        const stddevre = new RegExp("\\s+stddev\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
+        const stddevre = new RegExp("\\s+std dev\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
         const currentre = new RegExp("\\s+current\\s+:\\s.[0-9]+\\.[0-9]+A");
         const socre = new RegExp("\\s+soc\\s+:\\s[0-9].*[0-9]*%");
-        for(let item in data) {
+        for(let item of data) {
+            console.log(item);
             if(voltagere.test(item)) {
                 this.voltage = item.match(/[0-9]{2}\.[0-9]{2}/)[0];
             }
@@ -50,9 +58,8 @@ class BmsData {
 
 byteparser.on('data', (stream) => { //reads data
     let data = stream.toString().split('\n');
-    for (let item of data) {
-        let battery_data = new BmsData(item);
-    }
+    let battery_data = new BmsData(data);
+    console.log(battery_data);
     io.emit('data', battery_data);
 });
 port.on('error', (err) => {io.emit('error', err)});
