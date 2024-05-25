@@ -1,17 +1,17 @@
 <script setup>
     import {io} from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
     
-    // let data = ref({
-    //     "voltage": "91.92v",
-    //     "cells": "30",
-    //     "mean": "3.064v",
-    //     "std dev": "0.126v",
-    //     "alerts": "pack in LVC",
-    //     "current": "-0.2A",
-    //     "SOC": "4%",
-    //     "uptime": "0 hour(s), 2 minute(s), 15 second(s)"
-    // });
-    // let error = ref({});
+    let data = ref({
+        "voltage":"91.84v",
+        "cells":"30(notlocked)",
+        "mean":"3.062v",
+        "stddev":"0.037v",
+        "alerts":"notlocked",
+        "current":"-0.2A",
+        "SOC":"4%",
+        "uptime":["0","34","26"]
+    })
+    let error = ref({});
     const socket = io('http://localhost:3000', {  reconnectionDelayMax: 10000,});
     socket.on('data', (content) => {
         data.value = content;
@@ -21,21 +21,16 @@
         error = content;
     });
     
-    // export default {
-    //     data() {
-    //         return {
-    //             data: data,
-    //             error: error
-    //         }
-    //     }
-    // }
-    
 </script>
 <template>
-    <div v-if="error!={}">
+    <div v-if="JSON.stringify(error)!='{}'">
         Error: {{ JSON.stringify(error) }}
     </div>
-    <div>
-        Data: {{ JSON.stringify(data) }}
+    <div class="w-full h-full flex justify-center items-center flex-wrap gap-3">
+        <h1></h1> 
+        <div v-for="item in data" class="w-32 h-32 bg-gray-600 rounded-lg flex justify-center items-center">
+            <div v-if="item == 'uptime'">uptime</div>
+            <div v-else>{{ item }}</div>
+        </div>
     </div>
 </template>
