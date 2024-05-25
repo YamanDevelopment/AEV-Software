@@ -23,58 +23,58 @@ const io = new Server(httpServer, {cors: {
   }});
 const connections = [];
 
-class BmsData {
-    constructor(data) {
-        // Trim the first two elements of the array and the last element of the array (useless bc first is "\r" and last is "mcu> ")
-        data.shift();
-        data.shift();
-        data.pop();
+function BmsData(data) {
+    // Trim the first two elements of the array and the last element of the array (useless bc first is "\r" and last is "mcu> ")
+    data.shift();
+    data.shift();
+    data.pop();
 
-        // Split each element by the colon and trim the whitespace from the beginning and end
-        data = data.map((element) => {
-            return element.split(':').map((item) => {
-                return item.trim();
-            });
+    // Split each element by the colon and trim the whitespace from the beginning and end
+    data = data.map((element) => {
+        return element.split(':').map((item) => {
+            return item.trim();
         });
+    });
 
-        // Remove all instances of \r from the array
-        data = data.map((element) => {
-            return element.map((item) => {
-                return item.replace(/\r/g, '');
-            });
+    // Remove all instances of \r from the array
+    data = data.map((element) => {
+        return element.map((item) => {
+            return item.replace(/\r/g, '');
         });
+    });
 
-        // Trim spaces in all of the keys
-        data = data.map((element) => {
-            return element.map((item) => {
-                return item.replace(/\s/g, '');
-            });
+    // Trim spaces in all of the keys
+    data = data.map((element) => {
+        return element.map((item) => {
+            return item.replace(/\s/g, '');
         });
+    });
 
-        const dataObj = {};
-        for (let item of data) {
-            dataObj[item[0]] = item[1];
-        }
+    const dataObj = {};
+    for (let item of data) {
+        dataObj[item[0]] = item[1];
+    }
 
-        // Trim all non-numbers from dataObj.uptime
-        let oldUptime = dataObj.uptime.split("");
-        let newUptime = [];
-        for (let i = 0; i < oldUptime.length; i++) {
-            if (isNaN(oldUptime[i])) {
-                if (oldUptime[i].match(",")) {
-                    newUptime.push(oldUptime[i]);
-                }
-            } else {
+    // Trim all non-numbers from dataObj.uptime
+    let oldUptime = dataObj.uptime.split("");
+    let newUptime = [];
+    for (let i = 0; i < oldUptime.length; i++) {
+        if (isNaN(oldUptime[i])) {
+            if (oldUptime[i].match(",")) {
                 newUptime.push(oldUptime[i]);
             }
-        }        
-        dataObj.uptime = newUptime.join("").split(",");
-    }
+        } else {
+            newUptime.push(oldUptime[i]);
+        }
+    }               
+    dataObj.uptime = newUptime.join("").split(",");
+
+    return dataObj;
 }
 
 byteparser.on('data', (stream) => { //reads data
     let data = stream.toString().split('\n');
-    let battery_data = new BmsData(data);
+    let battery_data = BmsData(data);
     console.log(battery_data);
     io.emit('data', battery_data);
 });
