@@ -19,12 +19,12 @@ const connections = [];
 
 class BmsData {
     constructor(data) {
-        const voltagere = new RegExp("\\s{4}voltage\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
-        const cellsre = new RegExp("\\s{4}cells\\s+:\\s[0-9]{2}.+");
-        const meanre = new RegExp("\\s{4}mean\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
-        const stddevre = new RegExp("\\s{4}stddev\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
-        const currentre = new RegExp("\\s{4}current\\s+:\\s.[0-9]+\\.[0-9]+A");
-        const socre = new RegExp("\\s{4}soc\\s+:\\s[0-9].*[0-9]*%");
+        const voltagere = new RegExp("\\s+voltage\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
+        const cellsre = new RegExp("\\s+cells\\s+:\\s[0-9]{2}.+");
+        const meanre = new RegExp("\\s+mean\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
+        const stddevre = new RegExp("\\s+stddev\\s+:\\s[0-9]{2}\\.[0-9]{2}v");
+        const currentre = new RegExp("\\s+current\\s+:\\s.[0-9]+\\.[0-9]+A");
+        const socre = new RegExp("\\s+soc\\s+:\\s[0-9].*[0-9]*%");
         for(let item in data) {
             if(voltagere.test(item)) {
                 this.voltage = item.match(/[0-9]{2}\.[0-9]{2}/)[0];
