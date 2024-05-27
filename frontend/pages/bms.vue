@@ -1,6 +1,16 @@
 <script setup>
     import { io } from "https://cdn.socket.io/4.7.5/socket.io.esm.min.js";
+    import { Line } from 'vue-chartjs';
+    import * as chartConfig from '/assets/js/chartInfo.js'
+    import {Chart as ChartJS,CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend,Filler,Decimation} from 'chart.js';
+    ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,Title,Tooltip,Legend,Filler,Decimation);
 
+    // Data for chart renders
+    const voltageChart = chartConfig.voltageChart;
+    const currentChart = chartConfig.currentChart;
+    const voltage = ref({datasets: []})
+    const current = ref({datasets: []})
+    
     // Data & Error Refs for direct HTML access
     let data = ref({
         "voltage":"91.84v",
@@ -13,7 +23,7 @@
         "uptime":["0","34","26"]
     })
     let error = ref({});
-    // Stream to receive backend data
+    // Stream to receive backend data & update graphs
     const socket = io('http://localhost:3000', {  reconnectionDelayMax: 10000,});
     socket.on('data', (content) => {
         data.value = content;
@@ -22,43 +32,54 @@
         console.error("SOCKET ERROR: " + content);
         error.value = content;
     });
-    // Data for chart renders
-    let chartDataObj = {
-        labels: [ '1s', '0.5s', 'Now'],
-        datasets: [
-          {
-            label: 'Voltage',
-            backgroundColor: 'rgb(0,0,128)',
-            borderColor: '#f87979',
-            color: '#ffffff',
-            fill: {
-                target: 'origin',
-                above: 'rgba(255, 0, 0,0.3)',   // Area will be red above the origin
-            },
-            tension: 0.1,
-            pointStyle: false,
-            data: [40, 20, 12],
-          },
-        ]
-    };
-    
-    
+
+    let newVoltage = [0, 0, 0, 0, 0];
+    let newCurrent = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    onMounted(() => {
+        setInterval(() => {
+            (newVoltage).push(15);
+            (newVoltage).shift();
+            (newCurrent).push(15);
+            (newCurrent).shift();
+            voltage.value = chartConfig.getVoltage(newVoltage);
+            current.value = chartConfig.getCurrent(newCurrent);
+            console.log("changed")
+        }, 3000)
+    });
 </script>
 <template>
     <div v-if="JSON.stringify(error)!='{}'">
         Error: {{ JSON.stringify(error) }}
     </div>
-    <div class="w-full h-full flex justify-center items-center flex-wrap gap-3">
-        <h1></h1> 
-        <div v-for="item in data" class="w-32 h-32 bg-gray-600 rounded-lg flex justify-center items-center">
-            <div v-if="Array.isArray(item)">
-                Up for {{ item[0] }} hours, {{ item[1] }} minutes, {{ item[2] }} seconds.
+    <div v-else>
+        <div class="w-screen flex justify-center items-center">
+            <div class="w-full h-full flex flex-col justify-center items-center flex-wrap max-w-[900px]">
+                <div class="flex gap-5 h-[40vh] w-[95%] p-5 justify-between items-center">
+                    <div class="flex flex-col gap-5">
+                        <h1 class="text-3xl font-semibold">Battery</h1> 
+                        <p>
+                            Alerts: {{ data.alerts }}<br>
+                            Cells: {{ data.cells }}<br>
+                            Uptime: {{ data.uptime[0] }}:{{ data.uptime[1] }}:{{ data.uptime[2] }}
+                        </p>
+                    </div>
+                    <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
+                </div>
+                <div class="w-full h-[2px] flex justify-center items-center px-3">
+                    <div class="bg-gray-200 h-full w-full rounded-full"></div>
+                </div>
+                <div class="flex justify-center items-center gap-5 w-full h-[59vh] py-5">
+                    <div class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
+                        <h1 class="text-3xl">Voltage</h1>
+                        <Line :data="voltage" :options="voltageChart" class="bg-gray-200 rounded-md" />
+                    </div>
+                    <div class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
+                        <h1 class="text-3xl">Current</h1>
+                        <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
+                    </div>
+                </div>
             </div>
-            <div v-else>{{ item }}</div>
         </div>
-        <div class="w-32 h-32 bg-gray-600 rounded-lg flex justify-center items-center">
-            <BarChart :chartData="chartDataObj" />
-        </div>
-        
     </div>
+    
 </template>
