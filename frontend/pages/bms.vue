@@ -63,7 +63,7 @@
                             Uptime: {{ data.uptime[0] }}:{{ data.uptime[1] }}:{{ data.uptime[2] }}
                         </p>
                     </div>
-                    <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
+                    <line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
                 </div>
                 <div class="w-full h-[2px] flex justify-center items-center px-3">
                     <div class="bg-gray-200 h-full w-full rounded-full"></div>
