@@ -8,8 +8,8 @@
     // Data for chart renders
     const voltageChart = chartConfig.voltageChart;
     const currentChart = chartConfig.currentChart;
-    const voltage = ref({datasets: []})
-    const current = ref({datasets: []})
+    const voltage = ref(chartConfig.getVoltage([5,7,4,2,1]))
+    const current = ref(chartConfig.getCurrent([2,5,7,0,0,0,0,6,4]))
     
     // Data & Error Refs for direct HTML access
     let data = ref({
@@ -70,11 +70,11 @@
                 </div>
                 <div class="flex justify-center items-center gap-5 w-full h-[59vh] py-5">
                     <div class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
-                        <h1 class="text-3xl">Voltage</h1>
+			    <h1 class="text-3xl">Voltage: {{ data.voltage }}</h1>
                         <Line :data="voltage" :options="voltageChart" class="bg-gray-200 rounded-md" />
                     </div>
                     <div class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
-                        <h1 class="text-3xl">Current</h1>
+			    <h1 class="text-3xl">Current: {{ data.current }}</h1>
                         <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
                     </div>
                 </div>

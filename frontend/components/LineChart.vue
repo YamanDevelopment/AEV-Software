@@ -10,10 +10,28 @@
     export default {
             name: 'LineChart',
             components: { Line },
+	    props: {
+	    	["chartData", "chartOptions"]
+	    },
             computed: {
                 chartData() { return this.chartData },
                 chartOptions() { return this.chartOptions }
             },
+	    mounted () {
+	    	this.renderLineChart();
+	    },
+	    methods: {
+    		renderLineChart() {
+        	    this.renderChart(this.chartData, this.chartOptions);
+    		}
+	    },
+	    watch: {
+    	    	chartData () {
+        	    this.$nextTick(() => {
+            		this.renderLineChart();
+        	    })
+    		}
+	    }
             /*
             props: {
                 chartData: {
