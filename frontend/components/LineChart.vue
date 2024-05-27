@@ -11,8 +11,56 @@
             name: 'LineChart',
             components: { Line },
 	    props: {
-	    	["chartData", "chartOptions"]
-	    },
+		chartData: {
+                    type: Object,
+                    required: true
+                },
+		chartOptions: {
+		    type: Object,
+		    default: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            tooltip: {
+                                enabled: false
+                            },
+                            decimation: {
+                                enabled: true,
+                                algorithm: 'lttb',
+                                samples: 8,
+                                threshold: 2,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    source: 'auto',
+                                    // Disabled rotation for performance
+                                    maxRotation: 0,
+                                    autoSkip: true,
+                                    color: 'black',
+                                    padding: 6
+                                },
+                                grid: {
+                                    drawTicks: false
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: 'black', 
+                                    padding: 6
+                                },
+                                grid: {
+                                    drawTicks: false,
+                                }
+                            }
+                        },
+                        aspectRatio: 1/1,
+                    }
+	    	},
             computed: {
                 chartData() { return this.chartData },
                 chartOptions() { return this.chartOptions }
@@ -86,5 +134,5 @@
                 }
             }
             */
-    }
+    
 </script>
