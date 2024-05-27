@@ -60,7 +60,8 @@
                         },
                         aspectRatio: 1/1,
                     }
-	    	},
+	    	}
+	    },
             computed: {
                 chartData() { return this.chartData },
                 chartOptions() { return this.chartOptions }
@@ -80,6 +81,7 @@
         	    })
     		}
 	    }
+    }
             /*
             props: {
                 chartData: {
@@ -133,6 +135,7 @@
                     }
                 }
             }
+	}
             */
     
 </script>

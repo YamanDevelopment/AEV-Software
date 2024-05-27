@@ -43,7 +43,9 @@
             (newCurrent).shift();
             voltage.value = chartConfig.getVoltage(newVoltage);
             current.value = chartConfig.getCurrent(newCurrent);
-            console.log("changed")
+            console.log("changed");
+	    console.log(voltage.value.datasets[0].data);
+	    console.log(current.value.datasets[0].data);
         }, 3000)
     });
 </script>
@@ -65,7 +67,7 @@
 
                         </p>
                     </div>
-                    <line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
+                    <LazyLineChart :chartData="current" :chartOptions="currentChart" class="bg-gray-200 rounded-md" />
                 </div>
                 <div class="w-full h-[2px] flex justify-center items-center px-3">
                     <div class="bg-gray-200 h-full w-full rounded-full"></div>
