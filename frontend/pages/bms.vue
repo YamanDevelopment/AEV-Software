@@ -60,7 +60,9 @@
                         <p>
                             Alerts: {{ data.alerts }}<br>
                             Cells: {{ data.cells }}<br>
-                            Uptime: {{ data.uptime[0] }}:{{ data.uptime[1] }}:{{ data.uptime[2] }}
+                            Uptime: {{ data.uptime[0] }}:{{ data.uptime[1] }}:{{ data.uptime[2] }}<br>
+                            Charge: {{ data.SOC }}
+
                         </p>
                     </div>
                     <line :data="current" :options="currentChart" class="bg-gray-200 rounded-md" />
