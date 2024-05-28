@@ -1,9 +1,0 @@
-https://stackoverflow.com/questions/62848643/colors-are-not-updated-when-updating-chart
-
-https://stackoverflow.com/questions/74204977/chart-js-how-to-update-chart-data-with-interval
-
-https://stackoverflow.com/questions/50443394/vue-chart-component
-
-https://stackoverflow.com/questions/71132661/update-chart-vue3-chart-with-new-data
-
-https://stackoverflow.com/questions/49360165/chart-js-update-function-chart-labels-data-will-not-update-the-chart
