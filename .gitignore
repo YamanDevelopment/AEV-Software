@@ -7,11 +7,9 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Frontend
 node_modules
 dist
 dist-ssr
-.nuxt
 *.local
 
 # Editor directories and files
