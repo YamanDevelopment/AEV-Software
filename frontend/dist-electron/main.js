@@ -6,7 +6,8 @@ function e(n = "/") {
     webPreferences: {
       nodeIntegration: !0,
       contextIsolation: !1
-    }
+    },
+    autoHideMenuBar: !0
   }).loadURL(`${process.env.VITE_DEV_SERVER_URL}/#${n}`);
 }
 o.whenReady().then(() => {
