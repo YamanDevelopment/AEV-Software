@@ -7,7 +7,10 @@
         
 		// socket.emit("switch workspace", id);
         // child_process.exec(`wmctrl -s ${id}`);
-        child_process.exec(`hyprctl dispatch workspace ${id}`);
+        // child_process.exec(`hyprctl dispatch workspace ${id}`);
+		
+		// send request to localhost:3002/hyprland/dispatch with query params dispatcher=workspace and value=2
+		fetch(`http://localhost:3002/hyprland/dispatch?dispatcher=workspace&value=${id}`)
 	}
 	
 </script>
