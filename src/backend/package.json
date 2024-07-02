@@ -2,6 +2,9 @@
   "name": "aev-backend",
   "module": "main.js",
   "type": "module",
+  "scripts": {
+    "start": "node main.js",
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },

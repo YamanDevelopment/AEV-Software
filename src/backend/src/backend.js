@@ -4,7 +4,7 @@ import { Daemon, Listener } from 'node-gpsd';
 import { WebSocketServer } from 'ws';
 import express from 'express';
 import fs from 'fs';
-import child_process from 'child_process';
+import child_process, { execSync } from 'child_process';
 
 class AEVBackend {
 	constructor(config, logger) {
@@ -302,6 +302,10 @@ class AEVBackend {
 							// console.log(data.toString());
 							ws.send(data.toString());
 						});
+					} else if (message.startsWith('hyprland-dispatch|')) {
+						const dispatch = message.split('|')[1];
+						execSync(`hyprctl dispatch ${dispatch}`);
+						this.logger.success(`Dispatched "${dispatch}" for Hyprland`);
 					} else {
 						reply = 'Unknown message';
 						this.logger.debug('Unknown message received from client: ' + `"${message}"`);
@@ -375,6 +379,18 @@ class AEVBackend {
 				res.send({ status: 'GPS restarted' });
 			} catch (error) {
 				res.send({ status: 'Error restarting GPS: ' + error });
+			}
+		});
+
+		this.api.get('/hyprland/dispatch', (req, res) => {
+			if (req.query.dispatcher) {
+				if (req.query.value) {
+					execSync(`hyprctl dispatch ${req.query.dispatcher} ${req.query.value}`);
+					res.send({ status: `Dispatched ${req.query.dispatcher} with value ${req.query.value}` });
+				} else {
+					execSync(`hyprctl dispatch ${req.query.dispatcher}`);
+					res.send({ status: `Dispatched ${req.query.dispatcher}` });
+				}
 			}
 		});
 
