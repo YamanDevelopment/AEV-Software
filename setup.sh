@@ -23,3 +23,8 @@ npm install
 echo "Installing serialport dependencies..."
 cd ~/aev-software/src/serialport
 npm install
+
+# Install system dependencies
+echo "Installing system dependencies (may require superuser priveleges)..."
+sudo pacman -S npm hyprland gpsd
+# Should prob install AUR packages here but doesn't really matter rn will do so later - Thandi
