@@ -8,6 +8,7 @@ body{
 
 *{
     color: #17212B;
+    user-select: none;
 }
 
 /* Scrollbar */

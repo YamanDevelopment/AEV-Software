@@ -20,9 +20,9 @@
                 Lap
             </button>
         </div>
-        <div v-if="laps.length > 0" class="py-4 h-[73%]">
+        <div  class="py-4 h-[73%]">
             <h3 class="text-lg font-bold mb-2 text-center">Laps</h3>
-            <ul class="flex flex-col justify-start items-start flex-wrap gap-x-[15px] content-start max-h-full max-w-full overflow-x-scroll overflow-y-hidden">
+            <ul v-if="laps.length > 0" class="flex flex-col justify-start items-start flex-wrap gap-x-[15px] content-start max-h-full max-w-full overflow-x-scroll overflow-y-hidden">
                 <li v-for="(lap, index) in lapTimes" :key="index" class="text-center h-auto w-auto">
                     <p :class="lap.colorClass">
                         <span class="font-semibold">Lap {{ index + 1 }}:</span> {{ formatTime(lap.time) }}
