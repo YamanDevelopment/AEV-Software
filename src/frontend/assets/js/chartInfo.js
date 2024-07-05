@@ -80,8 +80,8 @@ const current = {
 			color: '#ffffff',
 			fill: {
 				target: 'origin',
-				above: 'rgba(255, 0, 0,0.3)',
-				below: 'rgba(0, 255, 0,0.3)',
+				above: 'rgba(0, 255, 0,0.3)',
+				below: 'rgba(255, 0, 0,0.3)',
 			},
 			tension: 0.1,
 			pointStyle: false,
