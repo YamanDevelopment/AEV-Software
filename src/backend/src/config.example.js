@@ -15,7 +15,7 @@ const config = {
 		'credentials': {
 			'client_email': '',
 			'client_private_key': '',
-			'scopes': ['https://www.googleapis.com/auth/spreadsheets'],
+			'scopes': ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
 		},
 		'sheetID': '',
 	},
