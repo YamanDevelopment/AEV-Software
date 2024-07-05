@@ -11,12 +11,9 @@ const config = {
 		api: 3002,
 	},
 	'debug': false,
-	'spreadsheet': {
-		'credentials': {
-			'client_email': '',
-			'client_private_key': '',
-			'scopes': ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
-		},
+	'google': {
+		'creds': { }, // Service account credentials .json file
+		'scopes': ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
 		'sheetID': '',
 	},
 };
