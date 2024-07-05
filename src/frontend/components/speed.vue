@@ -103,10 +103,10 @@
     <div class="flex flex-col h-screen justify-between items-center bg-[#f9fafe] overflow-hidden">
         <div class="w-screen flex items-center justify-center h-[30vh]">
             <div class="w-[25vw] max-w-[200px] h-[15vh] top-16 bg-[rgba(0,0,0,0.5)] rounded-xl border-4 flex justify-center items-center text-5xl sm:text-7xl font-bold text-white absolute" :style="`border-color: rgb(${speedColor.r}, ${speedColor.g}, ${speedColor.b})`">
-                {{ speed }}
+                {{ (Number(speed))*2 }}
             </div>
         </div>
-        <div v-if="speed <= 0" class="translate-x-[1px] max-w-[1150px]">
+        <div v-if="speed < 1" class="translate-x-[1px] max-w-[1150px]">
             <img src="/car.png" alt="" />
         </div> 
         <div v-else class="max-w-[1150px]">
