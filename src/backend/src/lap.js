@@ -1,6 +1,11 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import Stopwatch from 'statman-stopwatch';
+
+// Get the current file's directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class AEVLaps {
 	constructor(backend) {
@@ -10,6 +15,7 @@ class AEVLaps {
 
 		this.startTime = 0;
 		this.endTime = 0;
+		this.totalTime = 0;
 
 		this.current = {
 			num: 1,
@@ -35,7 +41,7 @@ class AEVLaps {
 			const GPS = this.backend.getGPSData();
 
 			const interval = {
-				swTime: swTime,
+				swTime: Number(swTime),
 				sysTime: Date.now(),
 				data: {
 					BMS: BMS,
@@ -50,16 +56,19 @@ class AEVLaps {
 	}
 
 	start() {
-		if (this.intervalID !== null) clearInterval(this.intervalID);
-		try {
+		if (this.intervalID !== null) {
+			clearInterval(this.intervalID);
+		} else {
 			this.startTime = Date.now();
+		}
+		try {
 			this.stopwatch.start();
 			this.current.startTime = Date.now();
 
 			this.intervalID = setInterval(() => {
 				this.recordData();
 			}, 1000);
-			this.backend.logger.info(`Lap #${this.current.num} started`);
+			this.backend.logger.debug(`Lap #${this.current.num} started`);
 		} catch (e) {
 			this.backend.logger.fail('Failed to start lap: ' + e);
 			if (this.intervalID !== null) clearInterval(this.intervalID);
@@ -100,10 +109,13 @@ class AEVLaps {
 			this.stopwatch.stop();
 
 			this.endTime = Date.now();
+			this.totalTime = (this.endTime - this.startTime) / 1000;
+			this.intervalID = null;
 			this.saveData();
 		} catch (e) {
 			this.backend.logger.fail('Failed to stop lap: ' + e);
 			clearInterval(this.intervalID);
+			this.intervalID = null;
 		}
 	}
 
@@ -111,14 +123,32 @@ class AEVLaps {
 		return this.list;
 	}
 
+	trimData() {
+		// If there are any duplicate lap entries (based on the lap number, startTime, and endTime), remove them
+		const uniqueLaps = [];
+		const uniqueLapKeys = [];
+		this.list.forEach((lap) => {
+			const key = `${lap.num}-${lap.startTime}-${lap.endTime}`;
+			if (!uniqueLapKeys.includes(key)) {
+				uniqueLapKeys.push(key);
+				uniqueLaps.push(lap);
+			}
+		});
+
+		this.list = uniqueLaps;
+	}
+
 	saveData() {
+		this.trimData();
 		const data = {
 			startTime: this.startTime,
 			endTime: this.endTime,
+			totalTime: this.totalTime,
 			laps: this.list,
 		};
 
 		// Define the path to the data.json file
+		// console.log(path.join(__dirname, '../../../data.json'));
 		const filePath = path.join(__dirname, '../../../data.json');
 
 		// Read the existing data from the file
@@ -131,9 +161,11 @@ class AEVLaps {
 			// Parse the existing data
 			let existingData = {};
 			try {
-				existingData = JSON.parse(fileContents);
+				console.log(fileContents.split('\n').join(''));
+				existingData = JSON.parse(fileContents.split('\n').join(''));
 			} catch (parseErr) {
 				this.backend.logger.fail('Error parsing JSON from data.json:', parseErr);
+				console.log(parseErr);
 				return;
 			}
 
@@ -154,6 +186,18 @@ class AEVLaps {
 				}
 			});
 		});
+
+		// Clear all the data
+		this.startTime = 0;
+		this.endTime = 0;
+		this.list = [];
+		this.current = {
+			num: 1,
+			startTime: 0,
+			endTime: 0,
+			split: 0,
+			data: [],
+		};
 	}
 };
 

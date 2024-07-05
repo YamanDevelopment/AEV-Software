@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 import Logger from '../logger.cjs';
-const logger = new Logger();
+import config from '../config.js';
+const logger = new Logger(config);
 const ws = new WebSocket('ws://localhost:3001');
 
 ws.on('error', console.error);
