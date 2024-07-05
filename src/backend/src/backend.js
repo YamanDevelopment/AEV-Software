@@ -6,6 +6,8 @@ import express from 'express';
 import fs from 'fs';
 import child_process, { execSync } from 'child_process';
 
+import AEVLaps from './lap.js';
+
 class AEVBackend {
 	constructor(config, logger) {
 		this.logger = logger;
@@ -55,14 +57,15 @@ class AEVBackend {
 
 		this.api = null;
 		this.wss = null;
+		this.laps = new AEVLaps(this);
 	}
 
 	async start() {
 		// this.logger.warn("Logger initialized in backend!");
 		await this.initBMS();
-		this.initGPS();
-		this.initSocket();
-		this.initAPI();
+		await this.initGPS();
+		await this.initSocket();
+		await this.initAPI();
 	}
 
 	async initBMS() {
@@ -302,6 +305,18 @@ class AEVBackend {
 							// console.log(data.toString());
 							ws.send(data.toString());
 						});
+					} else if (message === 'lap-start') {
+						this.laps.start();
+						reply = 'Lap started';
+						this.logger.success('Lap & stopwatch started');
+					} else if (message === 'lap-stop') {
+						this.laps.stop();
+						reply = 'Lap stopped';
+						this.logger.success('Lap & stopwatch stopped');
+					} else if (message === 'lap-lap') {
+						this.laps.lap();
+						reply = 'Lap recorded';
+						this.logger.success('Lap recorded');
 					} else if (message.startsWith('hyprland-dispatch|')) {
 						const dispatch = message.split('|')[1];
 						execSync(`hyprctl dispatch ${dispatch}`);
@@ -534,6 +549,14 @@ class AEVBackend {
 		} else {
 			return null;
 		}
+	}
+
+	getBMSData() {
+		return this.ports.BMS.data;
+	}
+
+	getGPSData() {
+		return this.ports.GPS.data;
 	}
 }
 
