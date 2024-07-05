@@ -267,10 +267,10 @@ class AEVBackend {
 					let reply;
 					this.logger.debug('Received message from client: ' + message);
 					if (message === 'bms-data') {
-						this.logger.success('Client requested BMS data, sending it over');
+						this.logger.debug('Client requested BMS data, sending it over');
 						reply = JSON.stringify(this.ports.BMS.data);
 					} else if (message === 'gps-data') {
-						this.logger.success('Client requested GPS data, sending it over');
+						this.logger.debug('Client requested GPS data, sending it over');
 						reply = JSON.stringify(this.ports.GPS.data);
 					} else if (message === 'gps-restart') {
 						try {
@@ -531,6 +531,7 @@ class AEVBackend {
 			this.ports.GPS.data.lat = data.lat;
 		}
 
+		this.logger.success('Parsed and updated GPS data');
 		return this.ports.GPS.data;
 	}
 

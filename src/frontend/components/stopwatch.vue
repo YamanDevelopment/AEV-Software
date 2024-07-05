@@ -34,6 +34,14 @@
 </template>
 
 <script>
+// idk socket thing
+const socket = new WebSocket("ws://localhost:3001");
+socket.onmessage = (event) => {
+	
+};
+
+
+
 export default {
     data() {
         return {
@@ -73,9 +81,11 @@ export default {
         },
         startStop() {
             if (this.running) {
+				socket.send("lap-stop");
                 clearInterval(this.intervalId);
                 this.running = false;
             } else {
+				socket.send("lap-start");
                 this.startTime = Date.now() - this.elapsed;
                 this.intervalId = setInterval(() => {
                     this.elapsed = Date.now() - this.startTime;
@@ -90,6 +100,7 @@ export default {
             this.laps = [];
         },
         lap() {
+			socket.send("lap-lap");
             if (this.running) {
                 this.laps.push(this.elapsed);
             }
