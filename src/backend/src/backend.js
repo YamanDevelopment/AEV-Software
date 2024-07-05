@@ -506,10 +506,10 @@ class AEVBackend {
 			// this.logger.success("RAW BMS DATA: \n\n" + data.join("\n"));
 			// this.logger.success("PARSED BMS DATA: \n\n" + JSON.stringify(finalData, null, 4));
 
-			console.log('Parsed BMS data: ' + JSON.stringify(finalData));
 			this.ports.BMS.data = finalData;
 			this.ports.BMS.debug.noRes = 0;
 			this.logger.success('Parsed and updated BMS data');
+			this.logger.debug(JSON.stringify(finalData));
 			return this.ports.BMS.data;
 
 		} catch (error) {

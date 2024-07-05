@@ -161,11 +161,11 @@ class AEVLaps {
 			// Parse the existing data
 			let existingData = {};
 			try {
-				console.log(fileContents.split('\n').join(''));
+				// console.log(fileContents.split('\n').join(''));
 				existingData = JSON.parse(fileContents.split('\n').join(''));
 			} catch (parseErr) {
-				this.backend.logger.fail('Error parsing JSON from data.json:', parseErr);
-				console.log(parseErr);
+				this.backend.logger.fail('Error parsing JSON from data.json:' + parseErr);
+				// console.log(parseErr);
 				return;
 			}
 
@@ -182,7 +182,7 @@ class AEVLaps {
 				if (writeErr) {
 					this.backend.logger.fail('Error writing to data.json:', writeErr);
 				} else {
-					this.backend.logger.log('Data successfully saved to data.json');
+					this.backend.logger.success('Data successfully saved to data.json');
 				}
 			});
 		});
