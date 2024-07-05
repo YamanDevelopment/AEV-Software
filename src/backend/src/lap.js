@@ -208,16 +208,17 @@ class AEVLaps {
 			seconds -= hours * 3600;
 			const minutes = Math.floor(seconds / 60);
 			seconds -= minutes * 60;
-		
+
 			// Pad to 2 or 3 digits, default is 2
 			const pad = (num, size = 2) => (`000${num}`).slice(size * -1);
-		
+
 			const finalFormat = `${pad(hours)}:${pad(minutes)}:${pad(seconds.toFixed(3), 6)}`;
 			// console.log(final)
 			return finalFormat;
 		}
 		try {
 			await this.google.sheet.loadInfo();
+			console.log(`Loaded sheet: ${this.google.sheet.title}`);
 			// for each session, duplicate the template sheet and fill in the data
 			const templateSheet = this.google.sheet.sheetsByIndex[0];
 			for (const sheet of this.google.sheet.sheetsByIndex) {
@@ -225,8 +226,9 @@ class AEVLaps {
 					await sheet.delete();
 				}
 			}
-			for (let i = 0; i < existingData.length; i++) {
+			for (let i = 0; i < existingData.sessions.length; i++) {
 				const currentSession = existingData.sessions[i];
+				// console.log(currentSession.startTime)
 				const newSheet = await templateSheet.duplicate({
 					title: `Session ${i + 1} at ${new Date(currentSession.startTime).toLocaleString()}`,
 					index: i + 1,
@@ -234,76 +236,44 @@ class AEVLaps {
 
 				// Load the cells of the new sheet
 				await newSheet.loadCells();
+				// console.log(newSheet.cellStats);
 
 				// Fill in the main table
-				const startTimeCell = newSheet.getCell('B1');
-				const endTimeCell = newSheet.getCell('B2');
-				const totalTimeCell = newSheet.getCell('B3');
+				const startTimeCell = newSheet.getCell(0, 1);
+				const endTimeCell = newSheet.getCell(1, 1);
+				const totalTimeCell = newSheet.getCell(2, 1);
 
 				startTimeCell.value = `=EPOCHTODATE(${currentSession.startTime}, 2)`;
 				endTimeCell.value = `=EPOCHTODATE(${currentSession.endTime}, 2)`;
-				totalTimeCell.value = (() => {
-					// Seconds to HH:MM:SS.SSS
-					let seconds = currentSession.totalTime;
-					const hours = Math.floor(seconds / 3600);
-					let minutes = Math.floor((seconds % 3600) / 60);
-					seconds = seconds % 60;
+				totalTimeCell.value = formatTime(currentSession.totalTime * 1000);
+				// console.log(startTimeCell.value, endTimeCell.value, totalTimeCell.value)
 
-					if (seconds < 10) {
-						seconds = `0${seconds}`;
-					}
-					if (minutes < 10) {
-						minutes = `0${minutes}`;
-					}
-
-					return `${hours}:${minutes}:${seconds.toFixed(3)}`;
-				})();
-
-				await sheet.saveUpdatedCells();
+				await newSheet.saveUpdatedCells();
 
 				// Fill in the lap list data
-				let lastStartTime = 0;
+				let lastStartTime = 'START';
 				for (let j = 0; j < currentSession.laps.length; j++) {
 					const currentLap = currentSession.laps[j];
-					const lapNumCell = newSheet.getCell(`A${j + 5}`);
-					const lapStartTimeCell = newSheet.getCell(`B${j + 5}`);
-					const lapEndTimeCell = newSheet.getCell(`C${j + 5}`);
-					const lapSplitCell = newSheet.getCell(`D${j + 5}`);
+					const lapNumCell = newSheet.getCell(j + 4, 0);
+					const lapStartTimeCell = newSheet.getCell(j + 4, 1);
+					const lapEndTimeCell = newSheet.getCell(j + 4, 2);
+					const lapSplitCell = newSheet.getCell(j + 4, 3);
 
 					lapNumCell.value = currentLap.num;
 					lapStartTimeCell.value = (() => {
 						// Convert epoch time to HH:MM:SS.SSS
-						const startTime = (currentLap.startTime - currentSession.startTime) / 1000;
-						if (lastStartTime === 0) {
+						const startTime = formatTime(currentLap.startTime - currentSession.startTime);
+						if (lastStartTime === 'START') {
 							lastStartTime = startTime;
-							return 0;
+							return 'START';
 						}
 						lastStartTime = startTime;
 						return startTime;
 					})();
-					lapEndTimeCell.value = (() => {
-						// Convert epoch time to HH:MM:SS.SSS
-						const endTime = (currentLap.endTime - currentSession.startTime) / 1000;
-						return endTime;
-					})();
-					lapSplitCell.value = (() => {
-						// Seconds to HH:MM:SS.SSS
-						let seconds = currentLap.split;
-						const hours = Math.floor(seconds / 3600);
-						let minutes = Math.floor((seconds % 3600) / 60);
-						seconds = seconds % 60;
-
-						if (seconds < 10) {
-							seconds = `0${seconds}`;
-						}
-						if (minutes < 10) {
-							minutes = `0${minutes}`;
-						}
-
-						return `${hours}:${minutes}:${seconds.toFixed(3)}`;
-					})();
+					lapEndTimeCell.value = formatTime(currentLap.endTime - currentSession.startTime);
+					lapSplitCell.value = formatTime(currentLap.split * 1000);
 				}
-				await sheet.saveUpdatedCells();
+				await newSheet.saveUpdatedCells();
 
 				// Populate the lap interval data table
 				let lastIndex = 2;
@@ -311,68 +281,55 @@ class AEVLaps {
 					const currentLap = currentSession.laps[j];
 					for (let k = 0; k < currentLap.data.length; k++) {
 						const currentInterval = currentLap.data[k];
-						const lapNumCell = newSheet.getCell(`E${k + lastIndex}`);
-						const swTimeCell = newSheet.getCell(`F${k + lastIndex}`);
-						const sysTimeCell = newSheet.getCell(`G${k + lastIndex}`);
-						const speedCell = newSheet.getCell(`H${k + lastIndex}`);
-						const latCell = newSheet.getCell(`I${k + lastIndex}`);
-						const lonCell = newSheet.getCell(`J${k + lastIndex}`);
-						const packCellCountCell = newSheet.getCell(`K${k + lastIndex}`);
-						const packVoltCell = newSheet.getCell(`L${k + lastIndex}`);
-						const packMeanVoltCell = newSheet.getCell(`M${k + lastIndex}`);
-						const packVoltStdDevCell = newSheet.getCell(`N${k + lastIndex}`);
-						const packAlertsCell = newSheet.getCell(`O${k + lastIndex}`);
-						const packCurrentCell = newSheet.getCell(`P${k + lastIndex}`);
-						const packSOCCell = newSheet.getCell(`Q${k + lastIndex}`);
-						const bmsUptimeCell = newSheet.getCell(`R${k + lastIndex}`);
+						const lapNumCell = newSheet.getCell(k + lastIndex - 1, 4);
+						const swTimeCell = newSheet.getCell(k + lastIndex - 1, 5);
+						const sysTimeCell = newSheet.getCell(k + lastIndex - 1, 6);
+						const speedCell = newSheet.getCell(k + lastIndex - 1, 7);
+						const latCell = newSheet.getCell(k + lastIndex - 1, 8);
+						const lonCell = newSheet.getCell(k + lastIndex - 1, 9);
+						const packCellCountCell = newSheet.getCell(k + lastIndex - 1, 10);
+						const packVoltCell = newSheet.getCell(k + lastIndex - 1, 11);
+						const packMeanVoltCell = newSheet.getCell(k + lastIndex - 1, 12);
+						const packVoltStdDevCell = newSheet.getCell(k + lastIndex - 1, 13);
+						const packAlertsCell = newSheet.getCell(k + lastIndex - 1, 14);
+						const packCurrentCell = newSheet.getCell(k + lastIndex - 1, 15);
+						const packSOCCell = newSheet.getCell(k + lastIndex - 1, 16);
+						const bmsUptimeCell = newSheet.getCell(k + lastIndex - 1, 17);
 
+						console.log(`Lap ${currentLap.num}`);
 						lapNumCell.value = currentLap.num;
-						swTimeCell.value = (() => {
-							// Seconds to HH:MM:SS.SSS
-							let seconds = currentInterval.swTime;
-							const hours = Math.floor(seconds / 3600);
-							let minutes = Math.floor((seconds % 3600) / 60);
-							seconds = seconds % 60;
-
-							if (seconds < 10) {
-								seconds = `0${seconds}`;
-							}
-							if (minutes < 10) {
-								minutes = `0${minutes}`;
-							}
-
-							return `${hours}:${minutes}:${seconds.toFixed(3)}`;
-						})();
+						swTimeCell.value = formatTime(currentInterval.swTime);
 						sysTimeCell.value = `=EPOCHTODATE(${currentInterval.sysTime}, 2)`;
 						speedCell.value = currentInterval.data.GPS.speed;
 						latCell.value = currentInterval.data.GPS.lat;
 						lonCell.value = currentInterval.data.GPS.lon;
-						packCellCountCell.value = currentInterval.data.BMS.packCellCount;
-						packVoltCell.value = currentInterval.data.BMS.packVolt.split('v')[0];
-						packMeanVoltCell.value = currentInterval.data.BMS.packMeanVolt.split('v')[0];
-						packVoltStdDevCell.value = currentInterval.data.BMS.packVoltStdDev.split('v')[0];
-						packAlertsCell.value = currentInterval.data.BMS.packAlerts.join(', ');
-						packCurrentCell.value = currentInterval.data.BMS.packCurrent.split('A')[0];
-						packSOCCell.value = currentInterval.data.BMS.packSOC.split('%')[0];
+						packCellCountCell.value = Number(currentInterval.data.BMS.cells);
+						packVoltCell.value = Number(currentInterval.data.BMS.voltage.split('v')[0]);
+						packMeanVoltCell.value = Number(currentInterval.data.BMS.mean.split('v')[0]);
+						packVoltStdDevCell.value = Number(currentInterval.data.BMS.stddev.split('v')[0]);
+						packAlertsCell.value = currentInterval.data.BMS.alerts.join(', ');
+						packCurrentCell.value = Number(currentInterval.data.BMS.current.split('A')[0]);
+						packSOCCell.value = Number(currentInterval.data.BMS.SOC.split('%')[0]) / 100;
 						bmsUptimeCell.value = (() => {
 							const uptime = currentInterval.data.BMS.uptime;
-							const hours = uptime[0];
-							let minutes = uptime[1];
-							let seconds = uptime[2];
+							let hours = Number(uptime[0]);
+							let minutes = Number(uptime[1]);
+							let seconds = Number(uptime[2]);
 							// If the seconds/minutes are less than 10, add trailing 0
 							seconds = seconds < 10 ? `0${seconds}` : seconds;
 							minutes = minutes < 10 ? `0${minutes}` : minutes;
+							hours = hours < 10 ? `0${hours}` : hours;
 
 							return `${hours}:${minutes}:${seconds}`;
-						});
-
-						await sheet.saveUpdatedCells();
+						})();
+						await newSheet.saveUpdatedCells();
 					}
 					lastIndex += currentLap.data.length;
 				}
 			}
 		} catch (e) {
 			this.backend.logger.fail('Failed to save data to Google Sheets: ' + e);
+			console.log(e);
 		}
 
 
