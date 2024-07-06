@@ -11,6 +11,11 @@ const config = {
 		api: 3002,
 	},
 	'debug': false,
+	'google': {
+		'creds': { }, // Service account credentials .json file
+		'scopes': ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
+		'sheetID': '',
+	},
 };
 
 export default config;
