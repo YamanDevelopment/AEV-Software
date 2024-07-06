@@ -37,4 +37,5 @@ SESSION_NAME="AEV-Software"
 #  kitty_pid=$(pgrep -n kitty)
 #  hyprctl dispatch movetoworkspace 5 address:$kitty_pid
 # fi
-  
+
+kitty --detach --title "aev-debug" "./tmux.sh"
