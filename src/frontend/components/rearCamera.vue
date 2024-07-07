@@ -39,7 +39,7 @@
                     const devices = await navigator.mediaDevices.enumerateDevices();
                     const videoDevices = devices.filter(device => device.kind === 'videoinput');
                     if (videoDevices.length > 0) {
-                    this.videoDevice = videoDevices[1];
+                    this.videoDevice = videoDevices[0];
                     }
                 }
                 catch (err) {

@@ -294,6 +294,7 @@ class AEVBackend {
 						this.logger.success('GPS restarted');
 					} catch (error) {
 						this.logger.warn('Error restarting GPS: ' + error);
+            console.log(error);
 					}
 				} else if (message === 'bms-restart') {
 					try {
