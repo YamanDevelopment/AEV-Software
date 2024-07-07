@@ -14,4 +14,4 @@ tmux send-keys 'cd /root/aev-software/src/backend' C-m
 tmux send-keys 'sudo node main.js && cat' C-m 
 
 
-kitty --detach --title "aev-debug" "start_aev_tmux"
+kitty --detach --title "aev-debug" "/usr/bin/start_aev_tmux"
