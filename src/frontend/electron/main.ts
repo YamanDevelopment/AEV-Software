@@ -41,6 +41,7 @@ app.whenReady().then(() => {
 // }); 
   createWindow('/', 'main', '../assets/dashboard.ico');
   createWindow('/cameras', 'cameras', '/cameras.ico');
+//   createWindow('/#/debug', 'aev-debug', '../assets/dashboard.ico');
 });
 app.on('window-all-closed', () => {
   backendProcess.kill();

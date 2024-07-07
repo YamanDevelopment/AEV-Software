@@ -195,19 +195,20 @@ class AEVBackend {
 		// Initialize serial port for GPS
 		if (fs.existsSync(this.config.GPS.path)) {
 			this.ports.GPS.enabled = true;
-			this.ports.GPS.daemon = new Daemon({
-				program: 'gpsd',
-				device: this.config.GPS.path,
-				port: 2947,
-				pid: '/tmp/gpsd.pid',
-				readOnly: false,
-				logger: {
-					// info: function() {},
-					info: this.logger.debug,
-					warn: this.logger.debug,
-					error: this.logger.fail,
-				},
-			});
+			this.ports.GPS.nores = 0;
+			// this.ports.GPS.daemon = new Daemon({
+			// 	program: 'gpsd',
+			// 	device: this.config.GPS.path,
+			// 	port: 2947,
+			// 	pid: '/tmp/gpsd.pid',
+			// 	readOnly: false,
+			// 	logger: {
+			// 		// info: function() {},
+			// 		info: this.logger.debug,
+			// 		warn: this.logger.debug,
+			// 		error: this.logger.fail,
+			// 	},
+			// });
 
 			this.ports.GPS.listener = new Listener({
 				port: 2947,
@@ -220,15 +221,23 @@ class AEVBackend {
 				},
 				parse: true,
 			});
-			this.ports.GPS.daemon.start(() => {
-				this.logger.success('GPS daemon started');
-			});
+			// this.ports.GPS.daemon.start(() => {
+			// 	this.logger.success('GPS daemon started');
+			// });
 			this.ports.GPS.listener.connect(() => {
 				this.logger.success('Connected to gpsd');
 				this.ports.GPS.listener.watch();
 			});
 			this.ports.GPS.listener.on('TPV', (data) => {
 				this.parseGPSData(data);
+				if (this.ports.GPS.nores >= 10) {
+					this.logger.warn('GPS data not being received, restarting GPS');
+					this.continue.GPS = -1;
+				}
+				if (this.continue.GPS === -1) {
+					this.stopGPS();
+					this.initGPS();
+				}
 				// this.logger.log(this.ports.GPS.data)
 			});
 
@@ -239,9 +248,15 @@ class AEVBackend {
 
 	async stopGPS() {
 		this.continue.GPS = false;
-		this.ports.GPS.listener.disconnect();
-		this.ports.GPS.daemon.stop();
-		this.logger.warn('GPS daemon stopped');
+		this.ports.GPS.listener.unwatch(() => {
+			this.logger.warn('Listener stopped watching gpsd');
+		});
+		this.ports.GPS.listener.disconnect(() => {
+			this.logger.warn('Disconnected listener from gpsd');
+		});
+		// this.ports.GPS.daemon.stop(() => {
+		// 	this.logger.warn('GPS daemon stopped');
+		// });
 	}
 
 	async stopBMS() {
@@ -547,7 +562,18 @@ class AEVBackend {
 			this.ports.GPS.data.lat = data.lat;
 		}
 
-		this.logger.success('Parsed and updated GPS data');
+		if (this.ports.GPS.data.speed === 0 && this.ports.GPS.data.lon === 0 && this.ports.GPS.data.lat === 0) {
+			this.ports.GPS.nores += 1;
+			this.logger.debug('No GPS data recieved');
+
+			if (this.ports.GPS.nores >= 10) {
+				this.logger.warn('GPS data not being received, restarting GPS');
+				this.continue.GPS = -1;
+			}
+		} else {
+			this.logger.success('Parsed and updated GPS data');
+		}
+
 		return this.ports.GPS.data;
 	}
 
