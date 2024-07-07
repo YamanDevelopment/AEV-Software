@@ -122,9 +122,7 @@ class AEVLaps {
 			this.endTime = Date.now();
 			this.totalTime = (this.endTime - this.startTime) / 1000;
 			this.intervalID = null;
-			(async () => {
-				await this.saveData();
-			})();
+			this.saveData();
 		} catch (e) {
 			this.backend.logger.fail('Failed to stop lap: ' + e);
 			clearInterval(this.intervalID);
@@ -151,7 +149,7 @@ class AEVLaps {
 		this.list = uniqueLaps;
 	}
 
-	async saveData() {
+	saveData() {
 		this.trimData();
 		const data = {
 			startTime: this.startTime,
@@ -165,7 +163,7 @@ class AEVLaps {
 		const filePath = path.join(__dirname, '../../../data.json');
 
 		// Read the existing data from the file
-		await fs.readFileSync(filePath, 'utf8', async (err, fileContents) => {
+		fs.readFile(filePath, 'utf8', (err, fileContents) => {
 			if (err) {
 				this.backend.logger.fail('Error reading data.json:', err);
 				return;
@@ -191,7 +189,7 @@ class AEVLaps {
 			existingData.sessions.push(data);
 
 			// Write the updated data back to the file
-			await fs.writeFileSync(filePath, JSON.stringify(existingData, null, 4), 'utf8', (writeErr) => {
+			fs.writeFile(filePath, JSON.stringify(existingData, null, 4), 'utf8', (writeErr) => {
 				if (writeErr) {
 					this.backend.logger.fail('Error writing to data.json:', writeErr);
 				} else {
@@ -199,6 +197,77 @@ class AEVLaps {
 				}
 			});
 		});
+
+		// Clear all the data
+		this.startTime = 0;
+		this.endTime = 0;
+		this.list = [];
+		this.current = {
+			num: 1,
+			startTime: 0,
+			endTime: 0,
+			split: 0,
+			data: [],
+		};
+	}
+	async pushToSheet() {
+		// async function sheetRequestBackoff(request, ...args) {
+		// 	function backoff()
+		// 	let func;
+		// 	if (request === 'loadInfo') func = this.google.sheet.loadInfo;
+		// 	else if (request === 'saveUpdatedCells') func = this.google.sheet.saveUpdatedCells;
+		// 	else if (request === 'delete') func = this.google.sheet.delete;
+		// 	else if (request === 'duplicate') func = this.google.sheet.duplicate;
+		// 	else if (request === 'loadCells') func = this.google.sheet.loadCells;
+		// 	else if (request === 'getCell') func = this.google.sheet.getCell;
+		// 	else return;
+
+		// 	let success = false;
+		// 	let attempts = 0;
+		// 	while (!success && attempts < 5) {
+		// 		try {
+		// 			const value = await func(...args);
+		// 			success = true;
+		// 			return value;
+		// 		} catch (e) {
+		// 			console.log(`Failed to ${request}: ${e}`);
+		// 			attempts++;
+		// 		}
+		// 	}
+		// }
+
+		async function sheetRequestWithBackoffAlgorithm(apiFunction, args, maxRetries = 10, maxBackoff = 32000) {
+			let retryCount = 0;
+			let delay = 1000; // Initial delay of 1 second
+		
+			while (retryCount < maxRetries) {
+				try {
+					// Attempt the API request
+					console.log(`${apiFunction.name}: ${args}`)
+					return await apiFunction(...args);
+				} catch (error) {
+					console.error(`Request failed (attempt ${retryCount + 1}): ${error}`);
+					console.log(error)
+					// Check if we've reached the maximum number of retries
+					if (retryCount === maxRetries - 1) {
+						throw new Error('Maximum retries reached, failing.');
+					}
+		
+					// Calculate the delay with exponential backoff + random jitter
+					let waitTime = Math.min(delay + Math.floor(Math.random() * 1000), maxBackoff);
+					console.log(`Waiting ${waitTime} ms before retrying...`);
+					await new Promise(resolve => setTimeout(resolve, waitTime));
+		
+					// Prepare for the next iteration
+					delay *= 2; // Double the delay for the next retry
+					retryCount++;
+				}
+			}
+		}
+		
+		async function sheetRequest(func, args) {
+			return await sheetRequestWithBackoffAlgorithm(func, args);
+		}
 
 		// Save it to Google Sheets
 		function formatTime(milliseconds) {
@@ -216,48 +285,49 @@ class AEVLaps {
 			// console.log(final)
 			return finalFormat;
 		}
+
 		try {
-			await this.google.sheet.loadInfo();
+			await sheetRequest(this.google.sheet.loadInfo, []);
 			console.log(`Loaded sheet: ${this.google.sheet.title}`);
 			// for each session, duplicate the template sheet and fill in the data
 			const templateSheet = this.google.sheet.sheetsByIndex[0];
 			for (const sheet of this.google.sheet.sheetsByIndex) {
 				if (sheet.sheetId !== templateSheet.sheetId) {
-					await sheet.delete();
+					await sheetRequest(sheet.delete, []);
 				}
 			}
 			for (let i = 0; i < existingData.sessions.length; i++) {
 				const currentSession = existingData.sessions[i];
 				// console.log(currentSession.startTime)
-				const newSheet = await templateSheet.duplicate({
+				const newSheet = await sheetRequest(this.google.sheet.duplicate, [{
 					title: `Session ${i + 1} at ${new Date(currentSession.startTime).toLocaleString()}`,
 					index: i + 1,
-				});
+				}]);
 
 				// Load the cells of the new sheet
-				await newSheet.loadCells();
+				await sheetRequest(newSheet.loadCells, []);
 				// console.log(newSheet.cellStats);
 
 				// Fill in the main table
-				const startTimeCell = newSheet.getCell(0, 1);
-				const endTimeCell = newSheet.getCell(1, 1);
-				const totalTimeCell = newSheet.getCell(2, 1);
+				const startTimeCell = await sheetRequest(newSheet.getCell, [0, 1]);
+				const endTimeCell = await sheetRequest(newSheet.getCell, [1, 1]);
+				const totalTimeCell = await sheetRequest(newSheet.getCell, [2, 1]);
 
 				startTimeCell.value = `=EPOCHTODATE(${currentSession.startTime}, 2)`;
 				endTimeCell.value = `=EPOCHTODATE(${currentSession.endTime}, 2)`;
 				totalTimeCell.value = formatTime(currentSession.totalTime * 1000);
 				// console.log(startTimeCell.value, endTimeCell.value, totalTimeCell.value)
 
-				await newSheet.saveUpdatedCells();
+				await sheetRequest(newSheet.saveUpdatedCells, []);
 
 				// Fill in the lap list data
 				let lastStartTime = 'START';
 				for (let j = 0; j < currentSession.laps.length; j++) {
 					const currentLap = currentSession.laps[j];
-					const lapNumCell = newSheet.getCell(j + 4, 0);
-					const lapStartTimeCell = newSheet.getCell(j + 4, 1);
-					const lapEndTimeCell = newSheet.getCell(j + 4, 2);
-					const lapSplitCell = newSheet.getCell(j + 4, 3);
+					const lapNumCell = await sheetRequest(newSheet.getCell, [j + 4, 0]);
+					const lapStartTimeCell = await sheetRequest(newSheet.getCell, [j + 4, 1]);
+					const lapEndTimeCell = await sheetRequest(newSheet.getCell, [j + 4, 2]);
+					const lapSplitCell = await sheetRequest(newSheet.getCell, [j + 4, 3]);
 
 					lapNumCell.value = currentLap.num;
 					lapStartTimeCell.value = (() => {
@@ -273,7 +343,7 @@ class AEVLaps {
 					lapEndTimeCell.value = formatTime(currentLap.endTime - currentSession.startTime);
 					lapSplitCell.value = formatTime(currentLap.split * 1000);
 				}
-				await newSheet.saveUpdatedCells();
+				await sheetRequest(newSheet.saveUpdatedCells, []);
 
 				// Populate the lap interval data table
 				let lastIndex = 2;
@@ -281,21 +351,36 @@ class AEVLaps {
 					const currentLap = currentSession.laps[j];
 					for (let k = 0; k < currentLap.data.length; k++) {
 						const currentInterval = currentLap.data[k];
-						const lapNumCell = newSheet.getCell(k + lastIndex - 1, 4);
-						const swTimeCell = newSheet.getCell(k + lastIndex - 1, 5);
-						const sysTimeCell = newSheet.getCell(k + lastIndex - 1, 6);
-						const speedCell = newSheet.getCell(k + lastIndex - 1, 7);
-						const latCell = newSheet.getCell(k + lastIndex - 1, 8);
-						const lonCell = newSheet.getCell(k + lastIndex - 1, 9);
-						const packCellCountCell = newSheet.getCell(k + lastIndex - 1, 10);
-						const packVoltCell = newSheet.getCell(k + lastIndex - 1, 11);
-						const packMeanVoltCell = newSheet.getCell(k + lastIndex - 1, 12);
-						const packVoltStdDevCell = newSheet.getCell(k + lastIndex - 1, 13);
-						const packAlertsCell = newSheet.getCell(k + lastIndex - 1, 14);
-						const packCurrentCell = newSheet.getCell(k + lastIndex - 1, 15);
-						const packSOCCell = newSheet.getCell(k + lastIndex - 1, 16);
-						const bmsUptimeCell = newSheet.getCell(k + lastIndex - 1, 17);
+						// const lapNumCell = newSheet.getCell(k + lastIndex - 1, 4);
+						// const swTimeCell = newSheet.getCell(k + lastIndex - 1, 5);
+						// const sysTimeCell = newSheet.getCell(k + lastIndex - 1, 6);
+						// const speedCell = newSheet.getCell(k + lastIndex - 1, 7);
+						// const latCell = newSheet.getCell(k + lastIndex - 1, 8);
+						// const lonCell = newSheet.getCell(k + lastIndex - 1, 9);
+						// const packCellCountCell = newSheet.getCell(k + lastIndex - 1, 10);
+						// const packVoltCell = newSheet.getCell(k + lastIndex - 1, 11);
+						// const packMeanVoltCell = newSheet.getCell(k + lastIndex - 1, 12);
+						// const packVoltStdDevCell = newSheet.getCell(k + lastIndex - 1, 13);
+						// const packAlertsCell = newSheet.getCell(k + lastIndex - 1, 14);
+						// const packCurrentCell = newSheet.getCell(k + lastIndex - 1, 15);
+						// const packSOCCell = newSheet.getCell(k + lastIndex - 1, 16);
+						// const bmsUptimeCell = newSheet.getCell(k + lastIndex - 1, 17);
 
+						const lapNumCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 4]);
+						const swTimeCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 5]);
+						const sysTimeCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 6]);
+						const speedCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 7]);
+						const latCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 8]);
+						const lonCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 9]);
+						const packCellCountCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 10]);
+						const packVoltCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 11]);
+						const packMeanVoltCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 12]);
+						const packVoltStdDevCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 13]);
+						const packAlertsCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 14]);
+						const packCurrentCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 15]);
+						const packSOCCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 16]);
+						const bmsUptimeCell = await sheetRequest(newSheet.getCell, [k + lastIndex - 1, 17]);
+						
 						console.log(`Lap ${currentLap.num}`);
 						lapNumCell.value = currentLap.num;
 						swTimeCell.value = formatTime(currentInterval.swTime);
@@ -322,7 +407,7 @@ class AEVLaps {
 
 							return `${hours}:${minutes}:${seconds}`;
 						})();
-						await newSheet.saveUpdatedCells();
+						await sheetRequest(newSheet.saveUpdatedCells, []);
 					}
 					lastIndex += currentLap.data.length;
 				}
@@ -331,19 +416,6 @@ class AEVLaps {
 			this.backend.logger.fail('Failed to save data to Google Sheets: ' + e);
 			console.log(e);
 		}
-
-
-		// Clear all the data
-		this.startTime = 0;
-		this.endTime = 0;
-		this.list = [];
-		this.current = {
-			num: 1,
-			startTime: 0,
-			endTime: 0,
-			split: 0,
-			data: [],
-		};
 	}
 };
 
