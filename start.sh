@@ -31,8 +31,8 @@ tmux new-session -d -s $DEBUG_SESSION_NAME
 tmux split-window -h 
 
 tmux select-pane -t 0
-tmux send-keys 'wg-quick up AEV-CarPi && cat'
+tmux send-keys 'wg-quick up AEV-CarPi && cat' C-m
 tmux select-pane -t 1
-tmux send-keys 'gping 1.1.1.1'
+tmux send-keys 'gping 1.1.1.1' C-m
 
 kitty --detach --title "aev-debug" "/usr/bin/start_aev_tmux"
