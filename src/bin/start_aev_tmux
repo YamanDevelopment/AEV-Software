@@ -1,1 +1,1 @@
-tmux attach-session -d
+tmux attach-session -d -t "AEV-Software"

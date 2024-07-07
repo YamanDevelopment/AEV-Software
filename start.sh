@@ -24,5 +24,15 @@ tmux select-pane -t 1
 tmux send-keys 'cd /root/aev-software/src/backend' C-m 
 tmux send-keys 'sudo node main.js && cat' C-m 
 
+# More Debug Stuff
+DEBUG_SESSION_NAME="AEV-Debug"
+
+tmux new-session -d -s $DEBUG_SESSION_NAME
+tmux split-window -h 
+
+tmux select-pane -t 0
+tmux send-keys 'wg-quick up AEV-CarPi && cat'
+tmux select-pane -t 1
+tmux send-keys 'gping 1.1.1.1'
 
 kitty --detach --title "aev-debug" "/usr/bin/start_aev_tmux"
