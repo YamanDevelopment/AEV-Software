@@ -1,6 +1,6 @@
 const totalTime = 3123692.655;
 let seconds = totalTime;
-let hours = Math.floor(seconds / 3600);
+const hours = Math.floor(seconds / 3600);
 let minutes = Math.floor((seconds % 3600) / 60);
 seconds = seconds % 60;
 
