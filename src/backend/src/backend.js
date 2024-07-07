@@ -252,84 +252,91 @@ class AEVBackend {
 	}
 
 	async initSocket() {
-		if (this.ports.BMS.enabled || this.ports.GPS.enabled) {
-			// Initialize WebSocket server
-			this.wss = new WebSocketServer({
-				port: this.config.ports.socket,
-			});
+		// Initialize WebSocket server
+		this.wss = new WebSocketServer({
+			port: this.config.ports.socket,
+		});
 
 
-			this.wss.on('connection', (ws) => {
-				this.logger.success('Client connected to WebSocket server');
-				ws.on('message', async (message) => {
-					message = message.toString();
-					const prefix = message;
-					let reply;
-					this.logger.debug('Received message from client: ' + message);
-					if (message === 'bms-data') {
-						this.logger.debug('Client requested BMS data, sending it over');
-						reply = JSON.stringify(this.ports.BMS.data);
-					} else if (message === 'gps-data') {
-						this.logger.debug('Client requested GPS data, sending it over');
-						reply = JSON.stringify(this.ports.GPS.data);
-					} else if (message === 'gps-restart') {
-						try {
-							await this.stopGMS();
-							await this.initGPS();
-							reply = 'GPS restarted';
-							this.logger.success('GPS restarted');
-						} catch (error) {
-							this.logger.warn('Error restarting GPS: ' + error);
-						}
-					} else if (message === 'bms-restart') {
-						try {
-							await this.stopBMS();
-							await this.initBMS();
-							reply = 'BMS restarted';
-							this.logger.success('BMS restarted');
-						} catch (error) {
-							this.logger.warn('Error restarting BMS: ' + error);
-						}
-					} else if (message === 'bms-alerts') {
-						ws.send('BMS alert mode enabled');
-						this.ports.BMS.alerts.parser.on('data', (data) => {
-							const possibleAlert = this.parseAlert(data.toString());
-							if (possibleAlert) ws.send(JSON.stringify(possibleAlert));
-						});
-					} else if (message === 'bms-debug') {
-						ws.send('BMS debug mode enabled');
-						const debugBMS = this.ports.BMS.port.pipe(new DelimiterParser({
-							delimiter: '\n',
-						}));
-						debugBMS.on('data', (data) => {
-							// console.log(data.toString());
-							ws.send(data.toString());
-						});
-					} else if (message === 'lap-start') {
-						this.laps.start();
-						reply = 'Lap started';
-						this.logger.success('Lap & stopwatch started');
-					} else if (message === 'lap-stop') {
-						this.laps.stop();
-						reply = 'Lap stopped';
-						this.logger.success('Lap & stopwatch stopped');
-					} else if (message === 'lap-lap') {
-						this.laps.lap();
-						reply = 'Lap recorded';
-						this.logger.success('Lap recorded');
-					} else if (message.startsWith('hyprland-dispatch|')) {
-						const dispatch = message.split('|')[1];
-						execSync(`hyprctl dispatch ${dispatch}`);
-						this.logger.success(`Dispatched "${dispatch}" for Hyprland`);
-					} else {
-						reply = 'Unknown message';
-						this.logger.debug('Unknown message received from client: ' + `"${message}"`);
+		this.wss.on('connection', (ws) => {
+			this.logger.success('Client connected to WebSocket server');
+			ws.on('message', async (message) => {
+				message = message.toString();
+				const prefix = message;
+				let reply;
+				this.logger.debug('Received message from client: ' + message);
+				if (message === 'bms-data') {
+					this.logger.debug('Client requested BMS data, sending it over');
+					reply = JSON.stringify(this.ports.BMS.data);
+				} else if (message === 'gps-data') {
+					this.logger.debug('Client requested GPS data, sending it over');
+					reply = JSON.stringify(this.ports.GPS.data);
+				} else if (message === 'gps-restart') {
+					try {
+						await this.stopGMS();
+						await this.initGPS();
+						reply = 'GPS restarted';
+						this.logger.success('GPS restarted');
+					} catch (error) {
+						this.logger.warn('Error restarting GPS: ' + error);
 					}
+				} else if (message === 'bms-restart') {
+					try {
+						await this.stopBMS();
+						await this.initBMS();
+						reply = 'BMS restarted';
+						this.logger.success('BMS restarted');
+					} catch (error) {
+						this.logger.warn('Error restarting BMS: ' + error);
+					}
+				} else if (message === 'bms-alerts') {
+					ws.send('BMS alert mode enabled');
+					this.ports.BMS.alerts.parser.on('data', (data) => {
+						const possibleAlert = this.parseAlert(data.toString());
+						if (possibleAlert) ws.send(JSON.stringify(possibleAlert));
+					});
+				} else if (message === 'bms-debug') {
+					ws.send('BMS debug mode enabled');
+					const debugBMS = this.ports.BMS.port.pipe(new DelimiterParser({
+						delimiter: '\n',
+					}));
+					debugBMS.on('data', (data) => {
+						// console.log(data.toString());
+						ws.send(data.toString());
+					});
+				} else if (message === 'lap-start') {
+					this.laps.start();
+					reply = 'Lap started';
+					this.logger.success('Lap & stopwatch started');
+				} else if (message === 'lap-stop') {
+					this.laps.stop();
+					reply = 'Lap stopped';
+					this.logger.success('Lap & stopwatch stopped');
+				} else if (message === 'lap-lap') {
+					this.laps.lap();
+					reply = 'Lap recorded';
+					this.logger.success('Lap recorded');
+				} else if (message === 'lap-sheets') {
+					this.laps.pushToSheet();
+					reply = 'Updated Google Sheets page with lap data (hopefully)';
+					this.logger.success('Updated Google Sheets page with lap data (hopefully)');
+				} else if (message.startsWith('hyprland-dispatch|')) {
+					const dispatch = message.split('|')[1];
+					execSync(`hyprctl dispatch ${dispatch}`);
+					this.logger.success(`Dispatched "${dispatch}" for Hyprland`);
+				} else {
+					reply = 'Unknown message';
+					this.logger.debug('Unknown message received from client: ' + `"${message}"`);
+				}
 
-					ws.send(`${prefix}|${reply}`);
-				});
+				ws.send(`${prefix}|${reply}`);
 			});
-		}
+		});
+
+		this.wss.on('listening', () => {
+			this.logger.success('WebSocket server started on port ' + this.config.ports.socket);
+		});
+
 	}
 
 	async initAPI() {
