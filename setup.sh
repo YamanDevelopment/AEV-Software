@@ -32,4 +32,3 @@ sudo pacman -S npm hyprland gpsd node git tmux kitty
 # Setup binaries
 echo "Setting up binaries..."
 ln -sf ~/aev-software/bin/start_aev_tmux /usr/bin/start_aev_tmux
-ln -sf ~/aev-software/bin/amplitude /usr/bin/amplitude
