@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { JWT } from 'google-auth-library';
 import Stopwatch from 'statman-stopwatch';
+import Discord from 'discord.js';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 // Get the current file's directory
@@ -76,6 +77,7 @@ class AEVLaps {
 			this.stopwatch.start();
 			this.current.startTime = Date.now();
 
+			this.recordData();
 			this.intervalID = setInterval(() => {
 				this.recordData();
 			}, 1000);
@@ -194,8 +196,30 @@ class AEVLaps {
 					this.backend.logger.fail('Error writing to data.json:', writeErr);
 				} else {
 					this.backend.logger.success('Data successfully saved to data.json');
+					const backupPaths = this.backend.config.backupPaths;
+					const timestamp = Date.now().toString();
+					backupPaths.forEach((backupPath) => {
+						fs.copyFile(filePath, `${backupPath}/data-${timestamp}.json`, (copyErr) => {
+							if (copyErr) {
+								this.backend.logger.fail(`Error copying data.json to ${backupPath}: ${copyErr}`);
+							} else {
+								this.backend.logger.success(`data.json copied to ${backupPath} as data-${timestamp}.json`);
+							}
+						});
+					});
+
+					// Check if connected to the internet
+					// If connected, push the data to Google Sheets
+					// If not connected, push the data to Discord
+					const connected = this.backend.checkInternet();
+					this.backend.logger.debug('Connected to the internet: ' + connected);
+					if (connected) {
+						this.pushToWebhook();
+						this.pushToSheet(existingData);
+					}
 				}
 			});
+
 		});
 
 		// Clear all the data
@@ -210,7 +234,7 @@ class AEVLaps {
 			data: [],
 		};
 	}
-	async pushToSheet() {
+	async pushToSheet(existingData) {
 		async function sheetRequestWithBackoffAlgorithm(sheet, functionName, args, maxRetries = 10, maxBackoff = 32000) {
 			let retryCount = 0;
 			let delay = 1000; // Initial delay of 1 second
@@ -218,7 +242,7 @@ class AEVLaps {
 			while (retryCount < maxRetries) {
 				try {
 					// Attempt the API request
-					console.log(functionName);
+					// console.log(functionName);
 					return await sheet[functionName](...args);
 				} catch (error) {
 					console.error(`Request failed (attempt ${retryCount + 1}): ${error}`);
@@ -375,7 +399,26 @@ class AEVLaps {
 			}
 		} catch (e) {
 			this.backend.logger.fail('Failed to save data to Google Sheets: ' + e);
-			this.backend.logger.log(e);
+			console.log(e);
+		}
+	}
+
+	async pushToWebhook() {
+		try {
+			const webhook = new Discord.WebhookClient({
+				url: this.backend.config.discord.webhookURL,
+			});
+			const data = fs.readFileSync(path.join(__dirname, '../../../data.json'));
+			const attachment = new Discord.AttachmentBuilder()
+				.setFile(data)
+				.setName('data.json');
+			await webhook.send({
+				content: `<@${this.backend.config.discord.userMentionID}> **ALSET CyberSedan Data (\`data.json\`) as of ${new Date().toLocaleString()}**`,
+				files: [attachment],
+			});
+			this.backend.logger.success('Data successfully sent to Discord webhook');
+		} catch (e) {
+			this.backend.logger.fail('Failed to send data to Discord webhook: ' + e);
 		}
 	}
 };

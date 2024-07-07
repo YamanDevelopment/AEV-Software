@@ -20,7 +20,7 @@ async function sheetRequestWithBackoffAlgorithm(sheet, functionName, args, maxRe
 	while (retryCount < maxRetries) {
 		try {
 			// Attempt the API request
-			console.log(functionName)
+			// console.log(functionName)
 			return await sheet[functionName](...args);
 		} catch (error) {
 			console.error(`Request failed (attempt ${retryCount + 1}): ${error}`);
@@ -144,7 +144,7 @@ try {
 				const packSOCCell = await sheetRequest(newSheet, "getCell", [k + lastIndex - 1, 16]);
 				const bmsUptimeCell = await sheetRequest(newSheet, "getCell", [k + lastIndex - 1, 17]);
 				
-				console.log(`Lap ${currentLap.num}`);
+				// console.log(`Lap ${currentLap.num}`);
 				lapNumCell.value = currentLap.num;
 				swTimeCell.value = formatTime(currentInterval.swTime * 1000);
 				sysTimeCell.value = `=EPOCHTODATE(${currentInterval.sysTime}, 2)`;

@@ -421,6 +421,15 @@ class AEVBackend {
 		});
 	}
 
+	checkInternet() {
+		try {
+			execSync('ping -c 1 google.com');
+			return true;
+		} catch {
+			return false;
+		}
+	}
+
 	parseBMSData(data) {
 		try {
 			// Trim the first two elements of the array and the last element of the array (useless bc first is "\r" and last is "BMS> ")

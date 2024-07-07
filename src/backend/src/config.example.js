@@ -7,8 +7,8 @@ const config = {
 		'path': '/dev/ttyACM0',
 	},
 	'ports': {
-		socket: 3001,
-		api: 3002,
+		'socket': 3001,
+		'api': 3002,
 	},
 	'debug': false,
 	'google': {
@@ -16,6 +16,12 @@ const config = {
 		'scopes': ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
 		'sheetID': '',
 	},
+	'discord': {
+		'webhookURL': '',
+		'channel': '',
+		'userMentionID': '',
+	},
+	'backupPaths': [ "~/aev-software/backup", "~/backup" , "/mnt" ]
 };
 
 export default config;

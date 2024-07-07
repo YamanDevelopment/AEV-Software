@@ -7,6 +7,7 @@ export XDG_CURRENT_DESKTOP=gnome
 gnome-control-center &
 soundux &
 lollypop &
+freetube &
 
 # Start Dashboard
 

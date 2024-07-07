@@ -32,3 +32,13 @@ sudo pacman -S npm hyprland gpsd node git tmux kitty
 # Setup binaries
 echo "Setting up binaries..."
 ln -sf ~/aev-software/bin/start_aev_tmux /usr/bin/start_aev_tmux
+
+# Make backup directory
+echo "Making backup directory..."
+mkdir ~/aev-software/backup
+mkdir ~/backup
+
+# Create config and data files
+echo "Creating config and data files..."
+cp ~/aev-software/src/backend/src/config.example.js ~/aev-software/src/backend/src/config.js
+cp ~/aev-software/data.example.json ~/aev-software/data.json
