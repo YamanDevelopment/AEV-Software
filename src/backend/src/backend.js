@@ -273,7 +273,7 @@ class AEVBackend {
 					reply = JSON.stringify(this.ports.GPS.data);
 				} else if (message === 'gps-restart') {
 					try {
-						await this.stopGMS();
+						await this.stopGPS();
 						await this.initGPS();
 						reply = 'GPS restarted';
 						this.logger.success('GPS restarted');
