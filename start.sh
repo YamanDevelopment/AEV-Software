@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# Start Apps
+export GTK_THEME=Catppuccin-Mocha-Standard-Mauve-Dark
+export XDG_CURRENT_DESKTOP=gnome 
+
+gnome-control-center &
+soundux &
+lollypop &
+
+# Start Dashboard
+
 SESSION_NAME="AEV-Software"
 
 tmux new-session -d -s $SESSION_NAME
