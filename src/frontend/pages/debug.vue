@@ -1,9 +1,13 @@
 <script setup>
 
-    // const socket = new WebSocket("ws://10.8.0.5:3001");
-    // // Message Handler
+let socket;
+	if (window.location.hostname != "localhost") {
+		socket = new WebSocket("ws://10.8.0.5:3001");
+	} else {
+		socket = new WebSocket("ws://localhost:3001");
+	}
+    // Message Handler
     // socket.onmessage = (event) => {
-
     // }
     
     function sendGoogleSheets(){

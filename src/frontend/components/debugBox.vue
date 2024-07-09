@@ -5,7 +5,12 @@
     const props = defineProps(['protocol', 'intervalTime'])
     const messages = ref([props.protocol]);
 
-    const socket = new WebSocket("ws://10.8.0.5:3001");
+    let socket;
+	if (window.location.hostname != "localhost") {
+		socket = new WebSocket("ws://10.8.0.5:3001");
+	} else {
+		socket = new WebSocket("ws://localhost:3001");
+	}
     socket.onopen = (event) => {
         socket.send(props.protocol);
     };

@@ -35,12 +35,12 @@
 
 <script>
 // idk socket thing
-const socket = new WebSocket("ws://10.8.0.5:3001");
-socket.onmessage = (event) => {
-	
-};
-
-
+let socket;
+if (window.location.hostname != "localhost") {
+	socket = new WebSocket("ws://10.8.0.5:3001");
+} else {
+	socket = new WebSocket("ws://localhost:3001");
+}
 
 export default {
     data() {
@@ -81,10 +81,12 @@ export default {
         },
         startStop() {
             if (this.running) {
+				this.laps.push(this.elapsed);
 				socket.send("lap-stop");
                 clearInterval(this.intervalId);
                 this.running = false;
             } else {
+				this.laps = [];
 				socket.send("lap-start");
                 this.startTime = Date.now() - this.elapsed;
                 this.intervalId = setInterval(() => {
