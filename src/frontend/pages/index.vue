@@ -5,8 +5,12 @@
 	} else {
 		socket = new WebSocket("ws://localhost:3001");
 	}
-	socket.onopen = (event) => {
-		socket.send("vpn-start");
+	try {
+		socket.onopen = (event) => {
+			socket.send("vpn-start");
+		};
+	} catch (error) {
+		console.log(`Error starting VPN (prob bc its already started): ${error}`);
 	}
 </script>
 
