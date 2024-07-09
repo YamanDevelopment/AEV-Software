@@ -39,9 +39,9 @@ app.whenReady().then(() => {
 // ls.on('close', (code) => {
 //   console.log(`child process exited with code ${code}`);
 // }); 
-  createWindow('/', 'main', '../assets/dashboard.ico');
-  createWindow('/cameras', 'cameras', '/cameras.ico');
-  createWindow('/debug', 'debug', '/debug.ico');
+createWindow('/debug', 'debug', '/debug.ico');
+createWindow('/cameras', 'cameras', '/cameras.ico');
+createWindow('/', 'main', '../assets/dashboard.ico');
 //   createWindow('/#/debug', 'aev-debug', '../assets/dashboard.ico');
 });
 app.on('window-all-closed', () => {
