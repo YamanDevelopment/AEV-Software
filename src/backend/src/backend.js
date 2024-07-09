@@ -4,7 +4,7 @@ import { Daemon, Listener } from 'node-gpsd';
 import { WebSocketServer } from 'ws';
 import express from 'express';
 import fs from 'fs';
-import child_process, { execSync } from 'child_process';
+import child_process, { exec, execSync } from 'child_process';
 
 import AEVLaps from './lap.js';
 
@@ -294,7 +294,7 @@ class AEVBackend {
 						this.logger.success('GPS restarted');
 					} catch (error) {
 						this.logger.warn('Error restarting GPS: ' + error);
-            console.log(error);
+						console.log(error);
 					}
 				} else if (message === 'bms-restart') {
 					try {
@@ -320,6 +320,34 @@ class AEVBackend {
 						// console.log(data.toString());
 						ws.send(data.toString());
 					});
+				} else if (message === 'vpn-start') {
+					try {
+						execSync('wg-quick up AEV-CarPi');
+						reply = 'VPN started';
+						this.logger.success('VPN started');
+					} catch (error) {
+						this.logger.fail('There was an error starting the VPN: ' + error);
+						console.log(error);
+					}
+				} else if (message === 'vpn-stop') {
+					try {
+						execSync('wg-quick down AEV-CarPi');
+						reply = 'VPN stopped';
+						this.logger.success('VPN stopped');
+					} catch (error) {
+						this.logger.fail('There was an error stopping the VPN: ' + error);
+						console.log(error);
+					}
+				} else if (message === 'vpn-restart') {
+					try {
+						execSync('wg-quick down AEV-CarPi');
+						execSync('wg-quick up AEV-CarPi');
+						reply = 'VPN restarted';
+						this.logger.success('VPN restarted');
+					} catch (error) {
+						this.logger.fail('There was an error restarting the VPN: ' + error);
+						console.log(error);
+					}
 				} else if (message === 'lap-start') {
 					this.laps.start();
 					reply = 'Lap started';

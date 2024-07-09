@@ -215,7 +215,7 @@ class AEVLaps {
 					this.backend.logger.debug('Connected to the internet: ' + connected);
 					if (connected) {
 						this.pushToWebhook();
-						this.pushToSheet(existingData);
+						// this.pushToSheet(existingData);
 					}
 				}
 			});
