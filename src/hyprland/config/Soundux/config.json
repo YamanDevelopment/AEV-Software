@@ -1,0 +1,136 @@
+{
+	"data": {
+	  "height": 552,
+	  "soundIdCounter": 18,
+	  "tabs": [
+		{
+		  "id": 0,
+		  "name": "sounds",
+		  "path": "/root/aev-software/src/sounds",
+		  "sortMode": 1,
+		  "sounds": [
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 17,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13729635828190458000,
+			  "name": "I AM SPEED",
+			  "path": "/root/aev-software/src/sounds/I AM SPEED.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 18,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13729635828190458000,
+			  "name": "Silly Horn",
+			  "path": "/root/aev-software/src/sounds/Silly Horn.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 14,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13729591331944260000,
+			  "name": "Police Siren",
+			  "path": "/root/aev-software/src/sounds/Police Siren.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 12,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728927615477164000,
+			  "name": "Engine Start",
+			  "path": "/root/aev-software/src/sounds/Engine Start.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 16,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728340745342280000,
+			  "name": "Ukelele",
+			  "path": "/root/aev-software/src/sounds/Ukelele.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 8,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728340745322279000,
+			  "name": "Walking",
+			  "path": "/root/aev-software/src/sounds/Walking.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 13,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728340745322279000,
+			  "name": "UFO",
+			  "path": "/root/aev-software/src/sounds/UFO.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 10,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728340745318947000,
+			  "name": "Racecar",
+			  "path": "/root/aev-software/src/sounds/Racecar.mp3",
+			  "remoteVolume": null
+			},
+			{
+			  "hotkeySequence": "",
+			  "hotkeys": [],
+			  "id": 11,
+			  "isFavorite": false,
+			  "localVolume": null,
+			  "modifiedDate": 13728340745318947000,
+			  "name": "Reversing",
+			  "path": "/root/aev-software/src/sounds/Reversing.mp3",
+			  "remoteVolume": null
+			}
+		  ]
+		}
+	  ],
+	  "width": 931
+	},
+	"settings": {
+	  "allowMultipleOutputs": false,
+	  "allowOverlapping": true,
+	  "audioBackend": 1,
+	  "deleteToTrash": true,
+	  "language": null,
+	  "localVolume": 100,
+	  "minimizeToTray": false,
+	  "muteDuringPlayback": false,
+	  "outputs": [],
+	  "pushToTalkKeys": [],
+	  "remoteVolume": 100,
+	  "selectedTab": 0,
+	  "stopHotkey": [],
+	  "syncVolumes": false,
+	  "tabHotkeysOnly": false,
+	  "theme": 0,
+	  "useAsDefaultDevice": false,
+	  "viewMode": 0
+	}
+  }
