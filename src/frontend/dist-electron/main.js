@@ -1,22 +1,22 @@
-import { app as a, BrowserWindow as n } from "electron";
-let s;
-function e(o = "/", r, t) {
-  new n({
+import { app as o, BrowserWindow as i } from "electron";
+let r;
+function e(a = "/", t, n) {
+  new i({
     width: 1420,
     height: 900,
-    title: r,
-    icon: t,
+    title: t,
+    icon: n,
     webPreferences: {
       nodeIntegration: !0,
       contextIsolation: !1,
       preload: "preload.js"
     },
     autoHideMenuBar: !0
-  }).loadURL(`http://localhost:5151/#${o}`);
+  }).loadURL(`http://localhost:5151/#${a}`);
 }
-a.whenReady().then(() => {
-  e("/", "main", "../assets/dashboard.ico"), e("/cameras", "cameras", "/cameras.ico"), e("/cameras", "cameras", "/cameras.ico");
+o.whenReady().then(() => {
+  e("/", "main", "../assets/dashboard.ico"), e("/cameras", "cameras", "/cameras.ico"), e("/debug", "debug", "/debug.ico");
 });
-a.on("window-all-closed", () => {
-  s.kill(), a.quit();
+o.on("window-all-closed", () => {
+  r.kill(), o.quit();
 });

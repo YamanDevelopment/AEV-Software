@@ -35,7 +35,7 @@
 
 <script>
 // idk socket thing
-const socket = new WebSocket("ws://localhost:3001");
+const socket = new WebSocket("ws://10.8.0.5:3001");
 socket.onmessage = (event) => {
 	
 };

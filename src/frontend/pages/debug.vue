@@ -15,6 +15,9 @@
     function restartGPS(){
         socket.send("gps-restart");
     }
+    function restartVPN(){
+        socket.send("vpn-restart");
+    }
 </script>
 
 <template>
@@ -28,6 +31,9 @@
             </button>
             <button @click="restartGPS" class="text-3xl font-semibold ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
                 Restart GPS
+            </button>
+            <button @click="restartVPN" class="text-3xl font-semibold ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
+                Restart VPN
             </button>
         </div>
         <div class="flex gap-4 justify-center items-center w-full h-[90%] px-16">

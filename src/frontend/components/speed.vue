@@ -38,7 +38,7 @@
 
     // Stream to receive backend data (Speed in this case)
     /* PROPER WS IMPLEMENTATION */
-    const socket = new WebSocket("ws://localhost:3001");
+    const socket = new WebSocket("ws://10.8.0.5:3001");
     // Message Handler
     socket.onmessage = (event) => {
         // Update Speed data

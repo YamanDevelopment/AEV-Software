@@ -1,20 +1,25 @@
 <script setup>
 
-let showLaps = ref(false);
-let soundboardShown = ref(true);
-let stopwatchShown = ref(false);
-
-function swapComponent() {
-  showLaps.value = !showLaps.value;
-  console.log(showLaps.value);
-  if (showLaps.value) {
-    soundboardShown.value = false;
-    stopwatchShown.value = true;
-  } else {
-    soundboardShown.value = true;
-    stopwatchShown.value = false;
+  const socket = new WebSocket("ws://10.8.0.5:3001");
+  socket.onopen = (event) => {
+    socket.send("vpn-start");
   }
-}
+
+  let showLaps = ref(false);
+  let soundboardShown = ref(true);
+  let stopwatchShown = ref(false);
+
+  function swapComponent() {
+    showLaps.value = !showLaps.value;
+    console.log(showLaps.value);
+    if (showLaps.value) {
+      soundboardShown.value = false;
+      stopwatchShown.value = true;
+    } else {
+      soundboardShown.value = true;
+      stopwatchShown.value = false;
+    }
+  }
 </script>
 
 <template>
