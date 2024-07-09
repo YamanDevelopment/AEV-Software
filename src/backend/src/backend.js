@@ -288,8 +288,16 @@ class AEVBackend {
 					reply = JSON.stringify(this.ports.GPS.data);
 				} else if (message === 'gps-restart') {
 					try {
-						await this.stopGPS();
-						await this.initGPS();
+						try {
+							await this.stopGPS();
+						} catch (error) {
+							this.logger.warn('Error stopping GPS: ' + error);
+						}
+						try {
+							await this.initGPS();
+						} catch (error) {
+							this.logger.warn('Error starting GPS: ' + error);
+						}
 						reply = 'GPS restarted';
 						this.logger.success('GPS restarted');
 					} catch (error) {
