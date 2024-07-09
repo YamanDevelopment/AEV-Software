@@ -306,20 +306,28 @@ class AEVBackend {
 						this.logger.warn('Error restarting BMS: ' + error);
 					}
 				} else if (message === 'bms-alerts') {
-					ws.send('BMS alert mode enabled');
-					this.ports.BMS.alerts.parser.on('data', (data) => {
-						const possibleAlert = this.parseAlert(data.toString());
-						if (possibleAlert) ws.send(JSON.stringify(possibleAlert));
-					});
+					try {
+						this.ports.BMS.alerts.parser.on('data', (data) => {
+							const possibleAlert = this.parseAlert(data.toString());
+							if (possibleAlert) ws.send(JSON.stringify(possibleAlert));
+						});
+						ws.send('BMS alert mode enabled');
+					} catch (error) {
+						this.logger.warn('Error enabling BMS alert mode: ' + error);
+					}
 				} else if (message === 'bms-debug') {
-					ws.send('BMS debug mode enabled');
-					const debugBMS = this.ports.BMS.port.pipe(new DelimiterParser({
-						delimiter: '\n',
-					}));
-					debugBMS.on('data', (data) => {
-						// console.log(data.toString());
-						ws.send(data.toString());
-					});
+					try {
+						const debugBMS = this.ports.BMS.port.pipe(new DelimiterParser({
+							delimiter: '\n',
+						}));
+						debugBMS.on('data', (data) => {
+							// console.log(data.toString());
+							ws.send(data.toString());
+						});
+						ws.send('BMS debug mode enabled');
+					} catch (error) {
+						this.logger.warn('Error enabling BMS debug mode: ' + error);
+					}
 				} else if (message === 'vpn-start') {
 					try {
 						execSync('wg-quick up AEV-CarPi');
