@@ -13,6 +13,10 @@ mv ~/.config/hypr ~/.config/hypr.bak
 ln -sf ~/aev-software/src/hyprland/config/hypr ~/.config/hypr
 mv ~/.config/ags ~/.config/ags.bak
 ln -sf ~/aev-software/src/hyprland/config/ags ~/.config/ags
+mv ~/.config/rofi ~/.config/rofi.bak
+ln -sf ~/aev-software/src/hyprland/config/rofi ~/.config/rofi
+mv ~/.config/Soundux ~/.config/Soundux.bak
+ln -sf ~/aev-software/src/hyprland/config/Soundux ~/.config/Soundux
 
 # Install frontend dependencies
 echo "Installing frontend dependencies..."
