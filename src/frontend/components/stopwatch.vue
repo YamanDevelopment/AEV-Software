@@ -86,6 +86,7 @@ export default {
                 clearInterval(this.intervalId);
                 this.running = false;
             } else {
+				this.reset();
 				this.laps = [];
 				socket.send("lap-start");
                 this.startTime = Date.now() - this.elapsed;
