@@ -5,6 +5,7 @@ import config from './src/config.js';
 import existingData from '../../data.json' with { type: "json" };
 import fs from 'fs';
 import path from 'path';
+const __dirname = path.resolve();
 
 try {
 	const webhook = new Discord.WebhookClient({
