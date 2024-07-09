@@ -122,8 +122,8 @@ export const currentChart = {
 			grid: {
 				drawTicks: false,
 			},
-			max: 50,
-			min: -20,
+			max: 30,
+			min: -40,
 		},
 	},
 	aspectRatio: 1 / 1,
