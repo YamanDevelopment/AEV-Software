@@ -295,6 +295,10 @@ class AEVLaps {
 					await sheetRequest(sheet, 'delete', []);
 				}
 			}
+			if (!existingData.sessions) {
+				this.backend.logger.fail('No sessions found in data.json');
+				return;
+			}
 			for (let i = 0; i < existingData.sessions.length; i++) {
 				const currentSession = existingData.sessions[i];
 				// console.log(currentSession.startTime)
