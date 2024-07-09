@@ -1,9 +1,29 @@
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-
-const google = {};
+import Discord from 'discord.js';
 import config from './src/config.js';
 import existingData from '../../data.json' with { type: "json" };
+import fs from 'fs';
+import path from 'path';
+
+try {
+	const webhook = new Discord.WebhookClient({
+		url: config.discord.webhookURL,
+	});
+	const data = fs.readFileSync(path.join(__dirname, '../../data.json'));
+	const attachment = new Discord.AttachmentBuilder()
+		.setFile(data)
+		.setName('data.json');
+	await webhook.send({
+		content: `<@${config.discord.userMentionID}> **ALSET CyberSedan Data (\`data.json\`) as of ${new Date().toLocaleString()}**`,
+		files: [attachment],
+	});
+	console.log('Data successfully sent to Discord webhook');
+} catch (e) {
+	console.log('Failed to send data to Discord webhook: ' + e);
+}
+
+const google = {};
 // console.log(existingData);
 google.jwt = new JWT({
 	email: config.google.creds.client_email,
