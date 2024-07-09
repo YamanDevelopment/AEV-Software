@@ -38,6 +38,14 @@ class AEVLaps {
 		};
 		this.google.sheet = new GoogleSpreadsheet(this.backend.config.google.sheetID, this.google.jwt);
 
+		const filePath = path.join(__dirname, '../../../data.json');
+		this.existingData = fs.readFileSync(filePath, 'utf8', (error, fileContents) => {
+			if (!error) {
+				return JSON.parse(fileContents.split('\n').join(''));
+			}
+			return {};
+		});
+		
 		this.backend.logger.startup('Lap module initialized');
 	}
 
