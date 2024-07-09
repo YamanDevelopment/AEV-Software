@@ -216,6 +216,7 @@ class AEVLaps {
 					if (connected) {
 						this.pushToWebhook();
 						// this.pushToSheet(existingData);
+						this.existingData = existingData;
 					}
 				}
 			});
@@ -234,7 +235,7 @@ class AEVLaps {
 			data: [],
 		};
 	}
-	async pushToSheet(existingData) {
+	async pushToSheet(existingData = this.existingData) {
 		async function sheetRequestWithBackoffAlgorithm(sheet, functionName, args, maxRetries = 10, maxBackoff = 32000) {
 			let retryCount = 0;
 			let delay = 1000; // Initial delay of 1 second
