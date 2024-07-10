@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  web_development_docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: site-webdevdocs
+    restart: unless-stopped
+    ports:
+      - 9785:3000
