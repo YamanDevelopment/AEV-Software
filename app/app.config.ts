@@ -21,7 +21,7 @@ export default defineAppConfig({
     },
     header: {
       logo: false,
-      title: 'ALSET SOLAR CYBERSEDAN',
+      title: 'AEV Dash',
       showLinkIcon: true,
       exclude: [],
       fluid: true
