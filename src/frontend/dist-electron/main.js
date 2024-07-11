@@ -15,7 +15,7 @@ function e(a = "/", t, n) {
   }).loadURL(`http://localhost:5151/#${a}`);
 }
 o.whenReady().then(() => {
-  e("/", "main", "../assets/dashboard.ico"), e("/cameras", "cameras", "/cameras.ico"), e("/debug", "debug", "/debug.ico");
+  e("/debug", "debug", "/debug.ico"), e("/cameras", "cameras", "/cameras.ico"), e("/", "main", "../assets/dashboard.ico");
 });
 o.on("window-all-closed", () => {
   r.kill(), o.quit();
