@@ -6,7 +6,8 @@ export XDG_CURRENT_DESKTOP=gnome
 
 gnome-control-center &
 soundux &
-lollypop &
+# too much ram usage
+# lollypop &
 # freetube --no-sandbox &
 
 # Start Dashboard
