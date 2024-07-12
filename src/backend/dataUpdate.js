@@ -172,14 +172,84 @@ try {
 				speedCell.value = currentInterval.data.GPS.speed;
 				latCell.value = currentInterval.data.GPS.lat;
 				lonCell.value = currentInterval.data.GPS.lon;
-				packCellCountCell.value = Number(currentInterval.data.BMS.cells);
-				packVoltCell.value = Number(currentInterval.data.BMS.voltage.split('v')[0]);
-				packMeanVoltCell.value = Number(currentInterval.data.BMS.mean.split('v')[0]);
-				packVoltStdDevCell.value = Number(currentInterval.data.BMS.stddev.split('v')[0]);
-				packAlertsCell.value = currentInterval.data.BMS.alerts.join(', ');
-				packCurrentCell.value = Number(currentInterval.data.BMS.current.split('A')[0]);
-				packSOCCell.value = Number(currentInterval.data.BMS.SOC.split('%')[0]) / 100;
+				packCellCountCell.value = (() => {
+					if (currentInterval.data.BMS.cells === undefined || currentInterval.data.BMS.cells === null) return 'N/A';
+					const cellCountRaw = currentInterval.data.BMS.cells;
+					try {
+						const cellCount = Number(cellCountRaw);
+						return cellCount;
+					} catch (e) {
+						console.log(`Failed to parse cell count (returning it raw): ${cellCountRaw}`);
+						return cellCountRaw;
+					}
+				})();
+				packVoltCell.value = (() => {
+					if (currentInterval.data.BMS.voltage === undefined || currentInterval.data.BMS.voltage === null) return 'N/A';
+					const voltageRaw = currentInterval.data.BMS.voltage;
+					try {
+						const voltage = Number(voltageRaw.split('v')[0]);
+						return voltage;
+					} catch (e) {
+						console.log(`Failed to parse voltage (returning it raw): ${voltageRaw}`);
+						return voltageRaw;
+					}
+				
+				})();
+				packMeanVoltCell.value = (() => {
+					if (currentInterval.data.BMS.mean === undefined || currentInterval.data.BMS.mean === null) return 'N/A';
+					const meanVoltageRaw = currentInterval.data.BMS.mean;
+					try {
+						const meanVoltage = Number(meanVoltageRaw.split('v')[0]);
+						return meanVoltage;
+					} catch (e) {
+						console.log(`Failed to parse mean voltage (returning it raw): ${meanVoltageRaw}`);
+						return meanVoltageRaw;
+					}
+				})();
+				packVoltStdDevCell.value = (() => {
+					if (currentInterval.data.BMS.stddev === undefined || currentInterval.data.BMS.stddev === null) return 'N/A';
+					const stdDevRaw = currentInterval.data.BMS.stddev;
+					try {
+						const stdDev = Number(stdDevRaw.split('v')[0]);
+						return stdDev;
+					} catch (e) {
+						console.log(`Failed to parse voltage stddev (returning it raw): ${stdDevRaw}`);
+						return stdDevRaw;
+					}
+				})();
+				// packAlertsCell.value = currentInterval.data.BMS.alerts.join(', ');
+				packAlertsCell.value = (() => {
+					if (currentInterval.data.BMS.alerts === undefined || currentInterval.data.BMS.alerts === null) return 'N/A';
+					const alerts = currentInterval.data.BMS.alerts;
+					if (alerts.length === 0) return 'None';
+					return alerts.join(', ');
+				})();
+				// packCurrentCell.value = Number(currentInterval.data.BMS.current.split('A')[0]);
+				packCurrentCell.value = (() => {
+					if (currentInterval.data.BMS.current === undefined || currentInterval.data.BMS.current === null) return 'N/A';
+					const currentRaw = currentInterval.data.BMS.current;
+					try {
+						const current = Number(currentRaw.split('A')[0]);
+						return current;
+					} catch (e) {
+						console.log(`Failed to parse current (returning it raw): ${currentRaw}`);
+						return currentRaw;
+					}
+				})();
+				// packSOCCell.value = Number(currentInterval.data.BMS.SOC.split('%')[0]) / 100;
+				packSOCCell.value = (() => {
+					if (currentInterval.data.BMS.SOC === undefined || currentInterval.data.BMS.SOC === null) return 'N/A';
+					const socRaw = currentInterval.data.BMS.SOC;
+					try {
+						const soc = Number(socRaw.split('%')[0]) / 100;
+						return soc;
+					} catch (e) {
+						console.log(`Failed to parse SOC (returning it raw): ${socRaw}`);
+						return socRaw;
+					}
+				})();
 				bmsUptimeCell.value = (() => {
+					if (currentInterval.data.BMS.uptime === undefined || currentInterval.data.BMS.uptime === null) return 'N/A';
 					const uptime = currentInterval.data.BMS.uptime;
 					let hours = Number(uptime[0]);
 					let minutes = Number(uptime[1]);
