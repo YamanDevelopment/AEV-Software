@@ -68,11 +68,7 @@
 
     /* PROPER WS IMPLEMENTATION */
     let socket;
-	if (window.location.hostname != "localhost") {
-		socket = new WebSocket(`ws://${window.location.hostname}:3001`);
-	} else {
-		socket = new WebSocket("ws://localhost:3001");
-	}
+	socket = new WebSocket(`ws://10.0.8.0.8:3001`);
     // Message Handler
     socket.onmessage = (event) => {
         // Update All data
