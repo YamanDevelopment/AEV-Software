@@ -11,7 +11,7 @@
     const currentChart = chartConfig.currentChart;
     const batteryChart = chartConfig.batteryChart;
     const voltage = ref(chartConfig.getVoltage([0, 0, 0, 0, 0, 0, 0, 0, 0]));
-    const current = ref(chartConfig.getCurrent([0, 0, 0, 0, 0, 0, 0, 0, 0]));
+    const current = ref(chartConfig.getCurrent([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]));
     const battery = ref(chartConfig.getBattery([0,100]));
 
     // Functions to update charts
