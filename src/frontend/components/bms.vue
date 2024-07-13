@@ -11,7 +11,7 @@
     const currentChart = chartConfig.currentChart;
     const batteryChart = chartConfig.batteryChart;
     const voltage = ref(chartConfig.getVoltage([0, 0, 0, 0, 0, 0, 0, 0, 0]));
-    const current = ref(chartConfig.getCurrent([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]));
+    const current = ref(chartConfig.getCurrent([0, 0, 0, 0, 0, 0, 0, 0, 0]));
     const battery = ref(chartConfig.getBattery([0,100]));
 
     // Functions to update charts
@@ -68,7 +68,11 @@
 
     /* PROPER WS IMPLEMENTATION */
     let socket;
-	socket = new WebSocket(`ws://10.0.8.0.8:3001`);
+	if (window.location.hostname != "localhost") {
+		socket = new WebSocket(`ws://${window.location.hostname}:3001`);
+	} else {
+		socket = new WebSocket("ws://localhost:3001");
+	}
     // Message Handler
     socket.onmessage = (event) => {
         // Update All data
