@@ -16,7 +16,7 @@ const voltage = {
 			pointStyle: false,
 			borderCapStyle: 'round',
 			cubicInterpolationMode: 'monotone',
-			data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		},
 	],
 };
@@ -87,7 +87,7 @@ const current = {
 			pointStyle: false,
 			borderCapStyle: 'round',
 			cubicInterpolationMode: 'monotone',
-			data: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+			data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 		},
 	],
 };
