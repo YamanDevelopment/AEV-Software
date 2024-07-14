@@ -364,8 +364,10 @@ class AEVBackend {
 						this.logger.fail('There was an error restarting the VPN: ' + error);
 						console.log(error);
 					}
-				} else if (message === 'ags-restart') {
+				} else if (message === 'ags-stop') {
 					execSync(`killall ags`);
+					this.logger.success(`Successfully Restarted AGS Bar`);
+				} else if (message === 'ags-start') {
 					execSync(`hyprctl dispatch exec ags`);
 					this.logger.success(`Successfully Restarted AGS Bar`);
 				}
