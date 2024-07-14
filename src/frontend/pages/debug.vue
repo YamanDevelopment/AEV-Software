@@ -22,6 +22,9 @@ let socket;
     function restartVPN(){
         socket.send("vpn-restart");
     }
+    function restartAGS(){
+        socket.send("ags-restart");
+    }
 </script>
 
 <template>
@@ -38,6 +41,9 @@ let socket;
             </button>
             <button @click="restartVPN" class="text-3xl font-semibold ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
                 Restart VPN
+            </button>
+            <button @click="restartAGS" class="text-3xl font-semibold ml-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">
+                Restart AGS
             </button>
         </div>
         <div class="flex gap-4 justify-center items-center w-full h-[90%] px-16">

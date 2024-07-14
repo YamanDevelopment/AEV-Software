@@ -364,7 +364,11 @@ class AEVBackend {
 						this.logger.fail('There was an error restarting the VPN: ' + error);
 						console.log(error);
 					}
-				} else if (message === 'lap-start') {
+				} else if (message === 'ags-restart') {
+					execSync(`killall ags && ags &`);
+					this.logger.success(`Successfully Restarted AGS Bar`);
+				}
+				else if (message === 'lap-start') {
 					this.laps.start();
 					reply = 'Lap started';
 					this.logger.success('Lap & stopwatch started');
