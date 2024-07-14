@@ -180,7 +180,7 @@ try {
 						return cellCount;
 					} catch (e) {
 						console.log(`Failed to parse cell count (returning it raw): ${cellCountRaw}`);
-						return cellCountRaw;
+						return `${cellCountRaw}`;
 					}
 				})();
 				packVoltCell.value = (() => {
@@ -191,7 +191,7 @@ try {
 						return voltage;
 					} catch (e) {
 						console.log(`Failed to parse voltage (returning it raw): ${voltageRaw}`);
-						return voltageRaw;
+						return `${voltageRaw}`;
 					}
 				
 				})();
@@ -203,7 +203,7 @@ try {
 						return meanVoltage;
 					} catch (e) {
 						console.log(`Failed to parse mean voltage (returning it raw): ${meanVoltageRaw}`);
-						return meanVoltageRaw;
+						return `${meanVoltageRaw}`;
 					}
 				})();
 				packVoltStdDevCell.value = (() => {
@@ -214,7 +214,7 @@ try {
 						return stdDev;
 					} catch (e) {
 						console.log(`Failed to parse voltage stddev (returning it raw): ${stdDevRaw}`);
-						return stdDevRaw;
+						return `${stdDevRaw}`;
 					}
 				})();
 				// packAlertsCell.value = currentInterval.data.BMS.alerts.join(', ');
@@ -233,7 +233,7 @@ try {
 						return current;
 					} catch (e) {
 						console.log(`Failed to parse current (returning it raw): ${currentRaw}`);
-						return currentRaw;
+						return `${currentRaw}`;
 					}
 				})();
 				// packSOCCell.value = Number(currentInterval.data.BMS.SOC.split('%')[0]) / 100;
@@ -245,7 +245,7 @@ try {
 						return soc;
 					} catch (e) {
 						console.log(`Failed to parse SOC (returning it raw): ${socRaw}`);
-						return socRaw;
+						return `${socRaw}`;
 					}
 				})();
 				bmsUptimeCell.value = (() => {
