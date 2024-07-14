@@ -365,7 +365,8 @@ class AEVBackend {
 						console.log(error);
 					}
 				} else if (message === 'ags-restart') {
-					execSync(`killall ags && hyprctl dispatch exec ags`);
+					execSync(`killall ags`);
+					execSync(`hyprctl dispatch exec ags`);
 					this.logger.success(`Successfully Restarted AGS Bar`);
 				}
 				else if (message === 'lap-start') {
