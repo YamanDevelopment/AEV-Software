@@ -5,6 +5,7 @@ import { JWT } from 'google-auth-library';
 import Stopwatch from 'statman-stopwatch';
 import Discord from 'discord.js';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
+import e from 'express';
 
 // Get the current file's directory
 const __filename = fileURLToPath(import.meta.url);
@@ -84,6 +85,10 @@ class AEVLaps {
 		try {
 			this.stopwatch.start();
 			this.current.startTime = Date.now();
+			this.current.endTime = "NC"; // Not Completed
+			this.current.totalTime = "NC";
+			
+
 
 			this.recordData();
 			this.intervalID = setInterval(() => {
@@ -114,6 +119,7 @@ class AEVLaps {
 			};
 			this.stopwatch.stop();
 			this.start();
+			this.saveData("lap");
 		} catch (e) {
 			this.backend.logger.fail('Failed to record lap: ' + e);
 		}
@@ -159,7 +165,7 @@ class AEVLaps {
 		this.list = uniqueLaps;
 	}
 
-	saveData() {
+	saveData(type = "stop") {
 		this.trimData();
 		const data = {
 			startTime: this.startTime,
@@ -196,7 +202,66 @@ class AEVLaps {
 			if (!existingData.sessions) {
 				existingData.sessions = [];
 			}
-			existingData.sessions.push(data);
+
+			if (type === "lap") {
+				// If the last session in the data is still running, update it
+				if (existingData.sessions.length > 0) {
+					// Search the sessions for the latest session that is still running and has the same start time
+					let found = false;
+					for (let i = existingData.sessions.length - 1; i >= 0; i--) {
+						const session = existingData.sessions[i];
+						if (session.endTime === "NC" && session.startTime === data.startTime) {
+							session.laps.push(data.laps[0]);
+							found = true;
+							break;
+						}
+					}
+
+					// If no session was found, create a new one
+					if (!found) {
+						existingData.sessions.push({
+							startTime: this.current.startTime,
+							endTime: this.current.endTime,
+							totalTime: this.current.totalTime,
+							laps: [data],
+						});
+					}
+				} else {
+					existingData.sessions.push({
+						startTime: Date.now(),
+						endTime: "NC",
+						totalTime: "NC",
+						laps: [data],
+					});
+				}
+			} else if (type === "stop") {
+				// Search the sessions for the latest session that is still running and has the same start time
+				let found = false;
+				for (let i = existingData.sessions.length - 1; i >= 0; i--) {
+					const session = existingData.sessions[i];
+					if (session.endTime === "NC" && session.startTime === data.startTime) {
+						session.endTime = data.endTime;
+						session.totalTime = data.totalTime;
+						session.laps = data.laps;
+						existingData.sessions[i] = session;
+						found = true;
+						break;
+					}
+
+					// If no session was found, create a new one
+					if (!found) {
+						existingData.sessions.push({
+							startTime: this.current.startTime,
+							endTime: this.current.endTime,
+							totalTime: this.current.totalTime,
+							laps: [data],
+						});
+					}
+				}
+			} else {
+				this.backend.logger.fail('Invalid type specified for saveData(): ' + type);
+				return;
+			}
 
 			// Write the updated data back to the file
 			fs.writeFile(filePath, JSON.stringify(existingData, null, 4), 'utf8', (writeErr) => {
