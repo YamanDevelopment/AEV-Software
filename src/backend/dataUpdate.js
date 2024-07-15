@@ -7,6 +7,8 @@ import fs from 'fs';
 import path from 'path';
 const __dirname = path.resolve();
 
+// Get device hostname
+const hostname = require('os').hostname();
 try {
 	const webhook = new Discord.WebhookClient({
 		url: config.discord.webhookURL,
@@ -16,13 +18,21 @@ try {
 		.setFile(data)
 		.setName('data.json');
 	await webhook.send({
-		content: `<@${config.discord.userMentionID}> **ALSET CyberSedan Data (\`data.json\`) as of ${new Date().toLocaleString()}**`,
+		content: [
+			`# **ALSET CyberSedan Data (\`data.json\`)**`,
+			`<@${config.discord.userMentionID}>`,
+			'**Ran from data update script.**',
+			`**Device:** ${hostname}`,
+			`**Timestamp:** ${new Date().toLocaleString()}`,
+		].join('\n'),
 		files: [attachment],
 	});
 	console.log('Data successfully sent to Discord webhook');
 } catch (e) {
 	console.log('Failed to send data to Discord webhook: ' + e);
 }
+
+
 
 const google = {};
 // console.log(existingData);

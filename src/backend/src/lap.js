@@ -426,7 +426,13 @@ class AEVLaps {
 				.setFile(data)
 				.setName('data.json');
 			await webhook.send({
-				content: `<@${this.backend.config.discord.userMentionID}> **ALSET CyberSedan Data (\`data.json\`) as of ${new Date().toLocaleString()}**`,
+				content: [
+					`# **ALSET CyberSedan Data (\`data.json\`)**`,
+					`<@${this.backend.config.discord.userMentionID}>`,
+					'**Ran directly from lap manager.**',
+					`**Device:** ${hostname}`,
+					`**Timestamp:** ${new Date().toLocaleString()}`,
+				].join('\n'),
 				files: [attachment],
 			});
 			this.backend.logger.success('Data successfully sent to Discord webhook');
