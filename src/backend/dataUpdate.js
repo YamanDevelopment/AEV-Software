@@ -44,8 +44,8 @@ async function sheetRequestWithBackoffAlgorithm(sheet, functionName, args, maxRe
 			// console.log(functionName)
 			return await sheet[functionName](...args);
 		} catch (error) {
-			console.error(`Request failed (attempt ${retryCount + 1}): ${error}`);
-			console.log(error)
+			console.error(`Request failed (attempt ${retryCount + 1}): ${error.response.status}`);
+			// console.log(error)
 			// Check if we've reached the maximum number of retries
 			if (retryCount === maxRetries - 1) {
 				throw new Error('Maximum retries reached, failing.');
@@ -177,7 +177,11 @@ try {
 					const cellCountRaw = currentInterval.data.BMS.cells;
 					try {
 						const cellCount = Number(cellCountRaw);
-						return cellCount;
+						if (typeof cellCount === 'number' && !isNaN(cellCount)) {
+							return cellCount;
+						} else {
+							throw new Error('Failed to parse cell count, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse cell count (returning it raw): ${cellCountRaw}`);
 						return `${cellCountRaw}`;
@@ -188,7 +192,11 @@ try {
 					const voltageRaw = currentInterval.data.BMS.voltage;
 					try {
 						const voltage = Number(voltageRaw.split('v')[0]);
-						return voltage;
+						if (typeof voltage === 'number' && !isNaN(voltage)) {
+							return voltage;
+						} else {
+							throw new Error('Failed to parse voltage, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse voltage (returning it raw): ${voltageRaw}`);
 						return `${voltageRaw}`;
@@ -200,7 +208,11 @@ try {
 					const meanVoltageRaw = currentInterval.data.BMS.mean;
 					try {
 						const meanVoltage = Number(meanVoltageRaw.split('v')[0]);
-						return meanVoltage;
+						if (typeof meanVoltage === 'number' && !isNaN(meanVoltage)) {
+							return meanVoltage;
+						} else {
+							throw new Error('Failed to parse mean voltage, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse mean voltage (returning it raw): ${meanVoltageRaw}`);
 						return `${meanVoltageRaw}`;
@@ -211,7 +223,11 @@ try {
 					const stdDevRaw = currentInterval.data.BMS.stddev;
 					try {
 						const stdDev = Number(stdDevRaw.split('v')[0]);
-						return stdDev;
+						if (typeof stdDev === 'number' && !isNaN(stdDev)) {
+							return stdDev;
+						} else {
+							throw new Error('Failed to parse voltage stddev, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse voltage stddev (returning it raw): ${stdDevRaw}`);
 						return `${stdDevRaw}`;
@@ -230,7 +246,11 @@ try {
 					const currentRaw = currentInterval.data.BMS.current;
 					try {
 						const current = Number(currentRaw.split('A')[0]);
-						return current;
+						if (typeof current === 'number' && !isNaN(current)) {
+							return current;
+						} else {
+							throw new Error('Failed to parse current, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse current (returning it raw): ${currentRaw}`);
 						return `${currentRaw}`;
@@ -242,7 +262,11 @@ try {
 					const socRaw = currentInterval.data.BMS.SOC;
 					try {
 						const soc = Number(socRaw.split('%')[0]) / 100;
-						return soc;
+						if (typeof soc === 'number' && !isNaN(soc)) {
+							return soc;
+						} else {
+							throw new Error('Failed to parse SOC, did not convert to a number');
+						}
 					} catch (e) {
 						console.log(`Failed to parse SOC (returning it raw): ${socRaw}`);
 						return `${socRaw}`;
@@ -270,3 +294,4 @@ try {
 	console.error('Failed to save data to Google Sheets: ' + e);
 	console.log(e);
 }
+
