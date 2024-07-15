@@ -20,7 +20,7 @@
                 Lap
             </button>
         </div>
-        <div  class="py-4 h-[73%]">
+        <div class="py-4 h-[73%]">
             <h3 class="text-lg font-bold mb-2 text-center">Laps</h3>
             <ul v-if="laps.length > 0" class="flex flex-col justify-start items-start flex-wrap gap-x-[15px] content-start max-h-full max-w-full overflow-x-scroll overflow-y-hidden">
                 <li v-for="(lap, index) in lapTimes" :key="index" class="text-center h-auto w-auto">
@@ -37,9 +37,9 @@
 // idk socket thing
 let socket;
 if (window.location.hostname != "localhost") {
-	socket = new WebSocket(`ws://${window.location.hostname}:3001`);
+    socket = new WebSocket(`ws://${window.location.hostname}:3001`);
 } else {
-	socket = new WebSocket("ws://localhost:3001");
+    socket = new WebSocket("ws://localhost:3001");
 }
 
 export default {
@@ -74,21 +74,22 @@ export default {
     methods: {
         formatTime(ms) {
             const date = new Date(ms);
+            const hours = String(date.getUTCHours()).padStart(2, '0');
             const minutes = String(date.getUTCMinutes()).padStart(2, '0');
             const seconds = String(date.getUTCSeconds()).padStart(2, '0');
             const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
-            return `${minutes}:${seconds}:${milliseconds}`;
+            return `${hours}:${minutes}:${seconds}:${milliseconds}`;
         },
         startStop() {
             if (this.running) {
-				this.laps.push(this.elapsed);
-				socket.send("lap-stop");
+                this.laps.push(this.elapsed);
+                socket.send("lap-stop");
                 clearInterval(this.intervalId);
                 this.running = false;
             } else {
-				this.reset();
-				this.laps = [];
-				socket.send("lap-start");
+                this.reset();
+                this.laps = [];
+                socket.send("lap-start");
                 this.startTime = Date.now() - this.elapsed;
                 this.intervalId = setInterval(() => {
                     this.elapsed = Date.now() - this.startTime;
@@ -103,7 +104,7 @@ export default {
             this.laps = [];
         },
         lap() {
-			socket.send("lap-lap");
+            socket.send("lap-lap");
             if (this.running) {
                 this.laps.push(this.elapsed);
             }
