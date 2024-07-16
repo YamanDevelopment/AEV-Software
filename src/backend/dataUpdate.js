@@ -661,6 +661,10 @@ async function excelSpreadsheet() {
 				})();
 			}
 		}
+
+		// Remove the template sheet before save
+		workbook.removeWorksheet('Session Data Template');
+
 		await workbook.xlsx.writeFile(path.join(__dirname, '../../laps.xlsx'))
 	} catch (error) {
 		console.error('Failed to save data to Excel spreadsheet: ' + error);
