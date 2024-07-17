@@ -1,4 +1,5 @@
 import fs from 'fs';
+import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { JWT } from 'google-auth-library';
@@ -8,7 +9,7 @@ import { GoogleSpreadsheet } from 'google-spreadsheet';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const hostname = require('os').hostname();
+const hostname = os.hostname();
 
 class AEVLaps {
 	constructor(backend) {

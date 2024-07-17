@@ -403,12 +403,16 @@ class AEVBackend {
 						} catch (error) {
 							this.logger.fail('Error killing AGS bar:' + error);
 						}
-						try {
-							execSync('hyprctl dispatch exec ags');
-							this.logger.success('Successfully started AGS bar');
-						} catch (error) {
-							this.logger.fail('Error starting AGS bar:' + error);
-						}
+						// Wait 1 second
+						setTimeout(() => {
+							try {
+								execSync('hyprctl dispatch exec ags');
+								this.logger.success('Successfully started AGS bar');
+							} catch (error) {
+								this.logger.fail('Error starting AGS bar:' + error);
+							}
+						}, 1000);
+						
 					} catch (error) {
 						this.logger.fail('Error restarting AGS bar:' + error);
 					}
