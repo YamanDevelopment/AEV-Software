@@ -44,6 +44,13 @@ class AEVBackend {
 				enabled: false,
 				daemon: null,
 				listener: null,
+				debug: {
+					interval: {
+						enabled: false,
+						id: null,
+					},
+					noRes: 0,
+				},
 				data: {
 					speed: 0,
 					lon: 0,
@@ -197,7 +204,7 @@ class AEVBackend {
 		// Initialize serial port for GPS
 		if (fs.existsSync(this.config.GPS.path)) {
 			this.ports.GPS.enabled = true;
-			this.ports.GPS.nores = 0;
+			this.ports.GPS.debug.noRes = 0;
 
 			this.ports.GPS.listener = new Listener({
 				port: 2947,
@@ -212,38 +219,61 @@ class AEVBackend {
 			this.ports.GPS.listener.connect(() => {
 				this.logger.success('Connected to gpsd');
 				this.ports.GPS.listener.watch();
+				let lastData = this.ports.GPS.data;
 
-				
+				if (!this.ports.GPS.debug.interval.enabled) {
+					try {
+						this.ports.GPS.debug.interval.id = setInterval(() => {
+							if (this.ports.GPS.debug.noRes >= 10) {
+								this.logger.warn('GPS data not being received, placing GPS in unknown state for restart');
+								this.continue.GPS = -1;
+							}
+							if (this.continue.GPS === -1) {
+								this.logger.warn('GPS is in an unknown state, restarting GPS');
+								this.stopGPS();
+								this.initGPS();
+							}
 
-				if (this.ports.GPS.nores >= 10) {
-					this.logger.warn('GPS data not being received, restarting GPS');
-					this.continue.GPS = -1;
+							const speedMatch = lastData.speed === this.ports.GPS.data.speed;
+							const lonMatch = lastData.lon === this.ports.GPS.data.lon;
+							const latMatch = lastData.lat === this.ports.GPS.data.lat;
+
+							if (speedMatch && lonMatch && latMatch) {
+								this.logger.debug('GPS data has not changed, incrementing noRes count');
+								this.ports.GPS.debug.noRes += 1;
+							} else {
+								this.ports.GPS.debug.noRes = 0;
+								lastData = this.ports.GPS.data;
+								this.logger.debug('GPS data has changed, resetting noRes count to zero');
+							}
+						}, 1000);
+						this.ports.GPS.debug.interval.enabled = true;
+					} catch (error) {
+						this.logger.warn('Error starting GPS debug interval: ' + error);
+					}
 				}
-				if (this.continue.GPS === -1) {
-					this.stopGPS();
-					this.initGPS();
-				}
+
 			});
 			this.ports.GPS.listener.on('TPV', (data) => {
 				this.parseGPSData(data);
 			});
-
 		} else {
 			this.logger.fail('GPS device not found at ' + this.config.GPS.path);
 		}
 	}
 
 	async stopGPS() {
-		this.continue.GPS = false;
+		this.continue.GPS = 0;
 		this.ports.GPS.listener.unwatch(() => {
 			this.logger.warn('Listener stopped watching gpsd');
 		});
 		this.ports.GPS.listener.disconnect(() => {
 			this.logger.warn('Disconnected listener from gpsd');
 		});
-		// this.ports.GPS.daemon.stop(() => {
-		// 	this.logger.warn('GPS daemon stopped');
-		// });
+
+		clearInterval(this.ports.GPS.debug.interval.id);
+		this.ports.GPS.debug.noRes = 0;
+		this.ports.GPS.listener = null;
 	}
 
 	async stopBMS() {
@@ -629,14 +659,9 @@ class AEVBackend {
 			this.ports.GPS.data.lat = data.lat;
 		}
 
-		if (this.ports.GPS.data.speed === 0 && this.ports.GPS.data.lon === 0 && this.ports.GPS.data.lat === 0) {
-			this.ports.GPS.nores += 1;
-			this.logger.debug('No GPS data recieved');
-
-			if (this.ports.GPS.nores >= 10) {
-				this.logger.warn('GPS data not being received, restarting GPS');
-				this.continue.GPS = -1;
-			}
+		if ((this.ports.GPS.data.speed === 0 && this.ports.GPS.data.lon === 0 && this.ports.GPS.data.lat === 0) || (!data.speed && !data.lon && !data.lat)) {
+			this.ports.GPS.debug.noRes += 1;
+			this.logger.debug('No GPS data recieved, incrementing noRes count');
 		} else {
 			this.logger.success('Parsed and updated GPS data');
 		}
