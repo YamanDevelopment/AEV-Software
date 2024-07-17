@@ -5,6 +5,8 @@ import { WebSocketServer } from 'ws';
 import express from 'express';
 import fs from 'fs';
 import child_process, { exec, execSync } from 'child_process';
+import dns from 'dns';
+import util from 'util';
 
 import AEVLaps from './lap.js';
 
@@ -196,40 +198,23 @@ class AEVBackend {
 		if (fs.existsSync(this.config.GPS.path)) {
 			this.ports.GPS.enabled = true;
 			this.ports.GPS.nores = 0;
-			// this.ports.GPS.daemon = new Daemon({
-			// 	program: 'gpsd',
-			// 	device: this.config.GPS.path,
-			// 	port: 2947,
-			// 	pid: '/tmp/gpsd.pid',
-			// 	readOnly: false,
-			// 	logger: {
-			// 		// info: function() {},
-			// 		info: this.logger.debug,
-			// 		warn: this.logger.debug,
-			// 		error: this.logger.fail,
-			// 	},
-			// });
 
 			this.ports.GPS.listener = new Listener({
 				port: 2947,
 				hostname: 'localhost',
 				logger: {
-					// info: function() {},
 					info: this.logger.debug,
 					warn: this.logger.debug,
 					error: this.logger.fail,
 				},
 				parse: true,
 			});
-			// this.ports.GPS.daemon.start(() => {
-			// 	this.logger.success('GPS daemon started');
-			// });
 			this.ports.GPS.listener.connect(() => {
 				this.logger.success('Connected to gpsd');
 				this.ports.GPS.listener.watch();
-			});
-			this.ports.GPS.listener.on('TPV', (data) => {
-				this.parseGPSData(data);
+
+				
+
 				if (this.ports.GPS.nores >= 10) {
 					this.logger.warn('GPS data not being received, restarting GPS');
 					this.continue.GPS = -1;
@@ -238,7 +223,9 @@ class AEVBackend {
 					this.stopGPS();
 					this.initGPS();
 				}
-				// this.logger.log(this.ports.GPS.data)
+			});
+			this.ports.GPS.listener.on('TPV', (data) => {
+				this.parseGPSData(data);
 			});
 
 		} else {
@@ -364,14 +351,38 @@ class AEVBackend {
 						this.logger.fail('There was an error restarting the VPN: ' + error);
 						console.log(error);
 					}
-				} else if (message === 'ags-stop') {
-					execSync(`killall ags`);
-					this.logger.success(`Successfully Restarted AGS Bar`);
-				} else if (message === 'ags-start') {
-					execSync(`hyprctl dispatch exec ags`);
-					this.logger.success(`Successfully Restarted AGS Bar`);
-				}
-				else if (message === 'lap-start') {
+				} else if (message === 'bar-stop') {
+					try {
+						execSync('killall ags');
+						this.logger.warn('Successfully killed AGS bar');
+					} catch (error) {
+						this.logger.fail('Error killing AGS bar:' + error);
+					}
+				} else if (message === 'bar-start') {
+					try {
+						execSync('hyprctl dispatch exec ags');
+						this.logger.success('Successfully started AGS bar');
+					} catch (error) {
+						this.logger.fail('Error starting AGS bar:' + error);
+					}
+				} else if (message === 'bar-restart') {
+					try {
+						try {
+							execSync('killall ags');
+							this.logger.warn('Successfully killed AGS bar');
+						} catch (error) {
+							this.logger.fail('Error killing AGS bar:' + error);
+						}
+						try {
+							execSync('hyprctl dispatch exec ags');
+							this.logger.success('Successfully started AGS bar');
+						} catch (error) {
+							this.logger.fail('Error starting AGS bar:' + error);
+						}
+					} catch (error) {
+						this.logger.fail('Error restarting AGS bar:' + error);
+					}
+				} else if (message === 'lap-start') {
 					this.laps.start();
 					reply = 'Lap started';
 					this.logger.success('Lap & stopwatch started');
@@ -387,6 +398,9 @@ class AEVBackend {
 					this.laps.pushToSheet();
 					reply = 'Updated Google Sheets page with lap data (hopefully)';
 					this.logger.success('Updated Google Sheets page with lap data (hopefully)');
+				} else if (message.startsWith('eval|')) {
+					const code = message.split('|')[1];
+					reply = `${this.eval(code)}`;
 				} else if (message.startsWith('hyprland-dispatch|')) {
 					const dispatch = message.split('|')[1];
 					execSync(`hyprctl dispatch ${dispatch}`);
@@ -488,12 +502,13 @@ class AEVBackend {
 		});
 	}
 
-	checkInternet() {
+	async checkInternet() {
+		const lookupService = util.promisify(dns.lookupService);
 		try {
-			execSync('ping -c 1 google.com');
-			return true;
-		} catch {
-			return false;
+			await lookupService('1.1.1.1', 53);
+			return true; // Internet connection is available
+		} catch (error) {
+			return false; // Internet connection is not available
 		}
 	}
 
@@ -652,6 +667,16 @@ class AEVBackend {
 
 	getGPSData() {
 		return this.ports.GPS.data;
+	}
+
+	// JavaScript eval function for debugging
+	eval(code) {
+		try {
+			const evaled = eval(code);
+			return evaled;
+		} catch (error) {
+			return error;
+		}
 	}
 }
 
