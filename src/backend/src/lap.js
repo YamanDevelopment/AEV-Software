@@ -20,6 +20,7 @@ class AEVLaps {
 		this.startTime = 0;
 		this.endTime = 0;
 		this.totalTime = 0;
+		this.uniqueID = '';
 
 		this.current = {
 			num: 1,
@@ -40,13 +41,14 @@ class AEVLaps {
 		this.google.sheet = new GoogleSpreadsheet(this.backend.config.google.sheetID, this.google.jwt);
 
 		const filePath = path.join(__dirname, '../../../data.json');
-		this.existingData = fs.readFileSync(filePath, 'utf8', (error, fileContents) => {
-			if (!error) {
-				return JSON.parse(fileContents.split('\n').join(''));
-			}
-			return {};
-		});
-		
+		// this.existingData = fs.readFileSync(filePath, 'utf8', (error, fileContents) => {
+		// 	if (!error) {
+		// 		return JSON.parse(fileContents.split('\n').join(''));
+		// 	}
+		// 	return {};
+		// });
+		this.existingData = {};
+
 		this.backend.logger.startup('Lap module initialized');
 	}
 
@@ -77,23 +79,23 @@ class AEVLaps {
 	}
 
 	start() {
-		if (this.intervalID !== null) {
-			clearInterval(this.intervalID);
-		} else {
-			this.startTime = Date.now();
-		}
 		try {
 			this.stopwatch.start();
 			this.current.startTime = Date.now();
-			this.current.endTime = "NC"; // Not Completed
-			this.current.totalTime = "NC";
-			
-
+			// this.current.endTime = 'NC'; // Not Completed
 
 			this.recordData();
-			this.intervalID = setInterval(() => {
-				this.recordData();
-			}, 1000);
+			if (this.intervalID === null) {
+				this.startTime = this.current.startTime;
+				console.log(`${this.startTime} should match ${this.current.startTime}`);
+				this.uniqueID = Math.random().toString(36).substring(2, 10);
+				this.intervalID = setInterval(() => {
+					this.recordData();
+				}, 1000);
+				// clearInterval(this.intervalID);
+			} else {
+				// this.startTime = Date.now();
+			}
 			this.backend.logger.debug(`Lap #${this.current.num} started`);
 		} catch (e) {
 			this.backend.logger.fail('Failed to start lap: ' + e);
@@ -103,7 +105,7 @@ class AEVLaps {
 
 	lap() {
 		try {
-			clearInterval(this.intervalID);
+			// clearInterval(this.intervalID);
 			this.current.endTime = Date.now();
 			this.recordData();
 			this.current.split = this.current.data[this.current.data.length - 1].swTime;
@@ -119,7 +121,10 @@ class AEVLaps {
 			};
 			this.stopwatch.stop();
 			this.start();
-			this.saveData("lap");
+			(() => {
+				this.backend.logger.debug('Save data function run from lap()');
+				this.saveData();
+			})();
 		} catch (e) {
 			this.backend.logger.fail('Failed to record lap: ' + e);
 		}
@@ -138,7 +143,10 @@ class AEVLaps {
 			this.endTime = Date.now();
 			this.totalTime = (this.endTime - this.startTime) / 1000;
 			this.intervalID = null;
-			this.saveData();
+			(() => {
+				this.backend.logger.debug('Save data function run from stop()');
+				this.saveData();
+			})();
 		} catch (e) {
 			this.backend.logger.fail('Failed to stop lap: ' + e);
 			clearInterval(this.intervalID);
@@ -163,16 +171,21 @@ class AEVLaps {
 		});
 
 		this.list = uniqueLaps;
+		console.log(this.list.length);
+		console.log(this.list);
 	}
 
-	saveData(type = "stop") {
+	saveData() {
 		this.trimData();
+		// type = 'stop';
 		const data = {
 			startTime: this.startTime,
 			endTime: this.endTime,
 			totalTime: this.totalTime,
+			uniqueID: this.uniqueID,
 			laps: this.list,
 		};
+		data.startTime = data.laps[0].startTime;
 
 		// Define the path to the data.json file
 		// console.log(path.join(__dirname, '../../../data.json'));
@@ -186,7 +199,7 @@ class AEVLaps {
 			}
 
 			// Parse the existing data
-			let existingData = {};
+			let existingData;
 			try {
 				// console.log(fileContents.split('\n').join(''));
 				existingData = JSON.parse(fileContents.split('\n').join(''));
@@ -203,15 +216,19 @@ class AEVLaps {
 				existingData.sessions = [];
 			}
 
-			if (type === "lap") {
+			// console.log(existingData);
+
+			if (type === 'lap') {
+				/**
 				// If the last session in the data is still running, update it
 				if (existingData.sessions.length > 0) {
-					// Search the sessions for the latest session that is still running and has the same start time
+					// Search the sessions for the latest session that has the same unique ID
 					let found = false;
 					for (let i = existingData.sessions.length - 1; i >= 0; i--) {
 						const session = existingData.sessions[i];
-						if (session.endTime === "NC" && session.startTime === data.startTime) {
-							session.laps.push(data.laps[0]);
+						if (session.uniqueID === data.uniqueID) {
+							// session.laps.push(data.laps[data.laps.length - 1]);
+							existingData.sessions[i] = data;
 							found = true;
 							break;
 						}
@@ -219,43 +236,62 @@ class AEVLaps {
 
 					// If no session was found, create a new one
 					if (!found) {
-						existingData.sessions.push({
-							startTime: this.current.startTime,
-							endTime: this.current.endTime,
-							totalTime: this.current.totalTime,
-							laps: [data],
-						});
+						// existingData.sessions.push({
+						// 	startTime: this.current.startTime,
+						// 	endTime: this.current.endTime,
+						// 	totalTime: this.current.totalTime,
+						// 	laps: [data],
+						// });
+						existingData.sessions.push(data);
 					}
 				} else {
 					existingData.sessions.push({
 						startTime: Date.now(),
-						endTime: "NC",
-						totalTime: "NC",
+						endTime: 'NC',
+						totalTime: 'NC',
 						laps: [data],
 					});
 				}
-			} else if (type === "stop") {
+				**/
+			} else if (type === 'stop') {
 				// Search the sessions for the latest session that is still running and has the same start time
 				let found = false;
 				for (let i = existingData.sessions.length - 1; i >= 0; i--) {
 					const session = existingData.sessions[i];
-					if (session.endTime === "NC" && session.startTime === data.startTime) {
-						session.endTime = data.endTime;
-						session.totalTime = data.totalTime;
-						session.laps = data.laps;
-						existingData.sessions[i] = session;
+					if (session.uniqueID === data.uniqueID) {
+						this.backend.logger.debug('Session already exists in data.json, updating it');
+						// session.endTime = data.endTime;
+						// session.totalTime = data.totalTime;
+						// session.laps = data.laps;
+						existingData.sessions[i] = data;
 						found = true;
 						break;
 					}
 
-					// If no session was found, create a new one
-					if (!found) {
-						existingData.sessions.push({
-							startTime: this.current.startTime,
-							endTime: this.current.endTime,
-							totalTime: this.current.totalTime,
-							laps: [data],
-						});
+				}
+				// If no session was found, create a new one
+				if (!found) {
+					this.backend.logger.debug('Session not found in data.json, creating a new one');
+					// existingData.sessions.push({
+					// 	startTime: this.startTime,
+					// 	endTime: this.endTime,
+					// 	totalTime: this.totalTime,
+					// 	laps: [data],
+					// });
+					existingData.sessions.push(data);
+				}
+			} else if (type === 'fix') {
+				// Somehow the data save is broken, so instead of fixing the issue, I'll fix the data itself lol
+				if (!existingData.sessions) {
+					existingData.sessions = [];
+					this.backend.logger.fail('No sessions in data.json to fix');
+				} else {
+					// For each instance in existingData, define it as currentSession and if currentSession.totalTime doesn't exist but currentSession.laps[0].totalTime does, replace the current session in the existingData array with currentSession.laps[0]
+					for (let i = 0; i < existingData.sessions.length; i++) {
+						const currentSession = existingData.sessions[i];
+						if (!currentSession.totalTime && currentSession.laps[0].totalTime) {
+							existingData.sessions[i] = currentSession.laps[0];
+						}
 					}
 				}
 			} else {
@@ -263,8 +299,15 @@ class AEVLaps {
 				return;
 			}
 
+			/**
+			for (let i = 0; i < existingData.sessions.length; i++) {
+				// idk why I have to do this but it fixes the issue of broken data format thankfully (I think at least)
+				existingData.sessions[i] = existingData.sessions[i].laps[0];
+			}
+			**/
+
 			// Write the updated data back to the file
-			fs.writeFile(filePath, JSON.stringify(existingData, null, 4), 'utf8', (writeErr) => {
+			fs.writeFile(filePath, JSON.stringify(existingData, null, 4), 'utf8', async (writeErr) => {
 				if (writeErr) {
 					this.backend.logger.fail('Error writing to data.json:', writeErr);
 				} else {
@@ -281,32 +324,33 @@ class AEVLaps {
 						});
 					});
 
-					// Check if connected to the internet
-					// If connected, push the data to Google Sheets
-					// If not connected, push the data to Discord
-					const connected = this.backend.checkInternet();
-					this.backend.logger.debug('Connected to the internet: ' + connected);
-					if (connected) {
-						this.pushToWebhook();
-						// this.pushToSheet(existingData);
-						this.existingData = existingData;
+					// Clear all the data
+					if (type === 'stop') {
+						this.startTime = 0;
+						this.endTime = 0;
+						this.list = [];
+						this.current = {
+							num: 1,
+							startTime: 0,
+							endTime: 0,
+							split: 0,
+							data: [],
+						};
 					}
+
+					// Check if connected to the internet
+					this.backend.checkInternet().then((connected) => {
+						this.backend.logger.debug('Connected to the internet: ' + connected);
+						if (connected) {
+							this.pushToWebhook();
+							// this.pushToSheet(existingData);
+							this.existingData = existingData;
+						}
+					});
 				}
 			});
 
 		});
-
-		// Clear all the data
-		this.startTime = 0;
-		this.endTime = 0;
-		this.list = [];
-		this.current = {
-			num: 1,
-			startTime: 0,
-			endTime: 0,
-			split: 0,
-			data: [],
-		};
 	}
 	async pushToSheet(existingData = this.existingData) {
 		async function sheetRequestWithBackoffAlgorithm(sheet, functionName, args, maxRetries = 10, maxBackoff = 32000) {
@@ -492,7 +536,7 @@ class AEVLaps {
 				.setName('data.json');
 			await webhook.send({
 				content: [
-					`# **ALSET CyberSedan Data (\`data.json\`)**`,
+					'# **ALSET CyberSedan Data (`data.json`)**',
 					`<@${this.backend.config.discord.userMentionID}>`,
 					'**Ran directly from lap manager.**',
 					`**Device:** ${hostname}`,
