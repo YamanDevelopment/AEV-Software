@@ -5,11 +5,10 @@ import { JWT } from 'google-auth-library';
 import Stopwatch from 'statman-stopwatch';
 import Discord from 'discord.js';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
-import e from 'express';
 
-// Get the current file's directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const hostname = require('os').hostname();
 
 class AEVLaps {
 	constructor(backend) {
