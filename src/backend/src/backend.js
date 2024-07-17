@@ -537,7 +537,7 @@ class AEVBackend {
 		try {
 			await lookupService('1.1.1.1', 53);
 			return true; // Internet connection is available
-		} catch () {
+		} catch (error) {
 			return false; // Internet connection is not available
 		}
 	}
