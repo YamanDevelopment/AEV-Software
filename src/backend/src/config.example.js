@@ -21,7 +21,7 @@ const config = {
 		'channel': '',
 		'userMentionID': '',
 	},
-	'backupPaths': [ "~/aev-software/backup", "~/backup" , "/mnt" ]
+	'backupPaths': [ '/mnt' ],
 };
 
 export default config;

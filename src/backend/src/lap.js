@@ -39,7 +39,7 @@ class AEVLaps {
 		};
 		this.google.sheet = new GoogleSpreadsheet(this.backend.config.google.sheetID, this.google.jwt);
 
-		const filePath = path.join(__dirname, '../../../data.json');
+		// const filePath = path.join(__dirname, '../../../data.json');
 		// this.existingData = fs.readFileSync(filePath, 'utf8', (error, fileContents) => {
 		// 	if (!error) {
 		// 		return JSON.parse(fileContents.split('\n').join(''));
@@ -120,7 +120,7 @@ class AEVLaps {
 			};
 			this.stopwatch.stop();
 			this.start();
-			this.saveData("lap");
+			this.saveData('lap');
 		} catch (e) {
 			this.backend.logger.fail('Failed to record lap: ' + e);
 		}
@@ -139,7 +139,7 @@ class AEVLaps {
 			this.endTime = Date.now();
 			this.totalTime = (this.endTime - this.startTime) / 1000;
 			this.intervalID = null;
-			this.saveData("stop");
+			this.saveData('stop');
 		} catch (e) {
 			this.backend.logger.fail('Failed to stop lap: ' + e);
 			clearInterval(this.intervalID);

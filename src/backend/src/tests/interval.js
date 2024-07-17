@@ -8,6 +8,6 @@ const intervalID = setInterval(() => {
 		clearInterval(intervalID);
 		console.log('Interval stopped');
 	}
-	console.log('After i check')
-	
+	console.log('After i check');
+
 }, 1000);

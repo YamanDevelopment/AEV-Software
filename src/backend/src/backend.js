@@ -1,10 +1,10 @@
 // Packages
 import { SerialPort, DelimiterParser } from 'serialport';
-import { Daemon, Listener } from 'node-gpsd';
+import { Listener } from 'node-gpsd';
 import { WebSocketServer } from 'ws';
 import express from 'express';
 import fs from 'fs';
-import child_process, { exec, execSync } from 'child_process';
+import child_process, { execSync } from 'child_process';
 import dns from 'dns';
 import util from 'util';
 
@@ -537,7 +537,7 @@ class AEVBackend {
 		try {
 			await lookupService('1.1.1.1', 53);
 			return true; // Internet connection is available
-		} catch (error) {
+		} catch () {
 			return false; // Internet connection is not available
 		}
 	}
