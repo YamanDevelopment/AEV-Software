@@ -1,31 +1,6 @@
 <script setup>
-    // let protocol 
-    // let intervalTime
-    // console.log(props.protocol)
     const props = defineProps(['protocol', 'intervalTime'])
     const messages = ref([props.protocol]);
-
-    let socket;
-	if (window.location.hostname != "localhost") {
-		socket = new WebSocket(`ws://${window.location.hostname}:3001`);
-	} else {
-		socket = new WebSocket("ws://localhost:3001");
-	}
-    socket.onopen = (event) => {
-        socket.send(props.protocol);
-    };
-
-    // Message Handler
-    socket.onmessage = (event) => {
-        // Update All data
-        console.log(event.data)
-        messages.value.push(event.data);
-    }
-    // onMounted(() => {
-    //     setTimeout(() => {
-            
-    //     }, 5000);
-    // });
 </script>
 
 <template>

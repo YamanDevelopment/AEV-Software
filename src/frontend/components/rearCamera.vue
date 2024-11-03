@@ -1,22 +1,9 @@
 <script setup>
-	import child_process from 'child_process';
-	function switch_workspace(id) {
-        
-		// socket.emit("switch workspace", id);
-        // child_process.exec(`wmctrl -s ${id}`);
-        // child_process.exec(`hyprctl dispatch workspace ${id}`);
-		
-		// send request to localhost:3002/hyprland/dispatch with query params dispatcher=workspace and value=2
-		fetch(`http://localhost:3002/hyprland/dispatch?dispatcher=workspace&value=${id}`)
-	}
-	
+// Stripped for DEMO purposes	
 </script>
 <template>
-    <div @click="switch_workspace(2)">
-        <div v-if="!videoDevice" class="w-full h-full border-4 rounded-lg border-gray-200 flex justify-center items-center text-7xl font-bold">No Camera Detected.</div>
-        <div v-else class="w-full h-full">
-        <video class="object-fill w-full h-full rounded-xl scale-x-[-1]" ref="videoElement" autoplay></video>
-        </div>
+    <div >
+        <div class="w-full h-full border-4 rounded-lg border-gray-200 flex justify-center items-center text-7xl font-bold"><video class="rounded-lg h-[99%]" src="/livetransmission.mp4" muted autoplay controls loop></video></div>
     </div>
 </template>
 

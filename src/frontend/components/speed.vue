@@ -35,45 +35,11 @@
         }
         return color;
     }
-
-    // Stream to receive backend data (Speed in this case)
-    /* PROPER WS IMPLEMENTATION */
-    let socket;
-	if (window.location.hostname != "localhost") {
-		socket = new WebSocket(`ws://${window.location.hostname}:3001`);
-	} else {
-		socket = new WebSocket("ws://localhost:3001");
-	}
-    // Message Handler
-    socket.onmessage = (event) => {
-        // Update Speed data
-        const split = (event.data).split("|");
-        if (split[0] === "gps-data") {
-            speed.value = (JSON.parse(split[1])).speed;
-            speedColor.value = getColorForSpeed(Number(speed.value));
-        }   
-    }
-    /* RESTAPI IMPLEMENTATION */
-    async function getGPSData(route) {
-        const response = await $fetch(`http://localhost:3001${route}`, {
-            method: 'GET'
-        })
-        if(route == '/gps/data'){
-            speed.value = JSON.parse(response);
-            speedColor.value = getColorForSpeed(Number(speed.value));
-        }
-    }
     
     onMounted(() => {
-        setInterval(() => {
-            /* WS IMPLEMENTATION */
-            socket.send("gps-data");
-
-            /* RESTAPI IMPLEMENTATION - (Make single button to restart BMS and log its status to console when pressed if we use this implementation) */
-            // getGPSData('/gps/data');
-        }, 550);
+        // Stripped for DEMO purposes
         /* TEST DATA, COMMENT WHEN TESTING ACTUAL CAR */    
-        /*
+        
         setInterval(() => {
             // ALL THIS WILL BE UPDATED WITH SERIALPORT UPDATE THIS IS STATIC FOR NOW WITH INTERVAL TEST CASE
             if(speed.value >= 40){
@@ -99,7 +65,7 @@
                 }
             }
         }, 300);
-        */
+        
     });
 </script>
 
@@ -111,11 +77,6 @@
                 {{ (Math.round(((Number(speed))*2)*10))/10 }}
             </div>
         </div>
-        <div v-if="speed < 1" class="translate-x-[1px] max-w-[1150px]">
-            <img src="/car.png" alt="" />
-        </div> 
-        <div v-else class="max-w-[1150px]">
-            <video src="/car.mp4" autoplay loop></video>
-        </div>
+        <carScene />
     </div>
 </template> 

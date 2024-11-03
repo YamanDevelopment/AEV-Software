@@ -64,61 +64,10 @@
     });
     let error = ref({});
 
-    // Stream to receive backend data & update graphs
-
-    /* PROPER WS IMPLEMENTATION */
-    let socket;
-	if (window.location.hostname != "localhost") {
-		socket = new WebSocket(`ws://${window.location.hostname}:3001`);
-	} else {
-		socket = new WebSocket("ws://localhost:3001");
-	}
-    // Message Handler
-    socket.onmessage = (event) => {
-        // Update All data
-        const split = (event.data).split("|");
-        if (split[0] === "bms-data") {
-            data.value = JSON.parse(split[1]);
-        }
-        // Voltage
-        updateVoltage(Number((data.value.voltage).slice(0, -1)));
-        // Current
-        updateCurrent(Number((data.value.current).slice(0, -1)));
-        // Battery
-        updateBattery(Number((data.value.SOC).slice(0, -1)));
-        // Reload Graphs
-        reloaded.value = !(reloaded.value);
-    }
-
-    /* RESTAPI IMPLEMENTATION */
-    async function getBMSData(route) {
-        const response = await $fetch(`http://localhost:3001${route}`, {
-            method: 'GET'
-        })
-        if(route == '/bms/data'){
-            data.value = JSON.parse(response);
-            // Voltage
-            updateVoltage(Number((data.value.voltage).slice(0, -1)), Number((data.value.mean).slice(0, -1)));
-            // Current
-            updateCurrent(Number((data.value.current).slice(0, -1)));
-            // Battery
-            updateBattery(Number((data.value.SOC).slice(0, -1)));
-            // Reload Graphs
-            reloaded.value = !(reloaded.value);
-        }
-    }
-
     onMounted(() => {
-        setInterval(() => {
-            /* WS IMPLEMENTATION */
-            socket.send("bms-data");
-
-            /* RESTAPI IMPLEMENTATION - (Make single button to restart BMS and log its status to console when pressed if we use this implementation) */
-            // getBMSData('/bms/data');
-        }, 500);
 
         /* Testing Graphs & Values -- COMMENT THIS OUT WHEN PLUGGING IN BMS */
-        /*
+        
         function rand(min, max) {
             return Math.random() * (max - min) + min;
         }
@@ -127,7 +76,7 @@
             "cells":"30(notlocked)",
             "mean":"3.062v",
             "stddev":"0.037v",
-            "alerts":"notlocked",
+            "alerts": [],
             "current":"-5.2A",
             "SOC":"4%",
             "uptime":["0","34","26"]
@@ -139,7 +88,7 @@
             data.value.voltage = Math.round(randVolt * 100) / 100;
             updateVoltage(randVolt, randVolt/30);
             // Current
-            let randCurr = rand(-8, 10);
+            let randCurr = rand(-30, 30);
             data.value.current = Math.round(randCurr * 100) / 100;
             updateCurrent(randCurr);
             // Battery
@@ -153,7 +102,7 @@
             // Reload Graphs
             reloaded.value = !(reloaded.value)
         }, 550);
-        */
+        
     });
 </script>
 
@@ -240,11 +189,11 @@
                     </div>
                     <!--Current Graph-->
                     <div v-if="reloaded == true" class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
-                        <h1 class="text-3xl">Current: {{ data.current }}</h1>
+                        <h1 class="text-3xl">Current: {{ data.current }}A</h1>
                         <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md w-full" />
                     </div>
                     <div v-if="reloaded == false" class="w-[45%] h-full flex flex-col gap-3 justify-center items-center">
-                        <h1 class="text-3xl">Current: {{ data.current }}</h1>
+                        <h1 class="text-3xl">Current: {{ data.current }}A</h1>
                         <Line :data="current" :options="currentChart" class="bg-gray-200 rounded-md w-full" />
                     </div>
                 </section>

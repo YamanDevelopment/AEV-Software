@@ -101,7 +101,7 @@ export default {
             let movingMarkerWhite2 = movingMarkerWhite.clone();
             movingMarkerWhite2.position.set(-60+1, 0, -1.5);
             scene.add(movingMarkerWhite2); 
-        } setInterval(createMarker, (3500 / (MULTIPLIER+1))); 
+        } setInterval(createMarker, (200 / (MULTIPLIER + 1))); 
         // preset markers
         for(let i = 0; i < 62; i+=2){
             geometry = new THREE.BoxGeometry(1, 0.12, 0.1);
@@ -141,9 +141,12 @@ export default {
         } animate();
 
         // Test speed reactivity
-        // setInterval(() => {
-        //     MULTIPLIER += 1;
-        // }, 500);
+        setInterval(() => {
+            MULTIPLIER += 1;
+            if (MULTIPLIER >= 40){
+                MULTIPLIER = 1;
+            }
+        }, 500);
     }
 }
 </script>
