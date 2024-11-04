@@ -11,6 +11,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@nuxt/content": "^2.13.4",
     "@tresjs/nuxt": "^2.1.2",
     "chart.js": "^4.4.3",
     "nuxt": "^3.13.2",
