@@ -1,0 +1,10 @@
+version: '3.3'
+services:
+  aev_software_demo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: site-aev-software-demo
+    restart: unless-stopped
+    ports:
+      - 9801:3000
