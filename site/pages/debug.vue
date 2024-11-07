@@ -31,7 +31,7 @@
 </script>
 
 <template>
-    <demoNav :openNote="openModal" class="absolute top-1/3 left-5 z-[9999]" />
+    <demoNav :enableNote="true" :openNote="openModal" class="absolute top-1/3 left-5 z-[9999]" />
     <demoModal
         :show="showModal"
         :title="'Remote System Debug Page'"

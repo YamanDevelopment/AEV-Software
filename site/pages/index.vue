@@ -1,17 +1,7 @@
-<script setup>
-    useSeoMeta({
-        title: 'AEV Software - Solar Car Dashboard DEMO',
-        ogTitle: 'AEV Software - Solar Car Dashboard DEMO',
-        description: 'This is the software demo for the Alset Solar Cybersedan dashboard system which includes details, images, simulations, and more.',
-        ogDescription: 'This is the software demo for the Alset Solar Cybersedan dashboard system which includes details, images, simulations, and more.',
-        ogImage: 'https://private-user-images.githubusercontent.com/109718204/354929556-48044884-80c2-424a-8b2b-e2ced255b7f2.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzA2OTgyMjIsIm5iZiI6MTczMDY5NzkyMiwicGF0aCI6Ii8xMDk3MTgyMDQvMzU0OTI5NTU2LTQ4MDQ0ODg0LTgwYzItNDI0YS04YjJiLWUyY2VkMjU1YjdmMi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQxMTA0JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MTEwNFQwNTI1MjJaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0zNTAzNmEyZmU1ODQyZThkN2E0MTgwNjc4NGJlMTY4YjA1ODA0OWNlZGRkZDE0NDdiZmQxOTdhNzE5YmQwZTRmJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.3AMQc6Dgp8PZ9mQT6FuSgpezhMnI1-Z8LkbKqDqBL8s',
-    });
-</script>
-
 <template>
     <div class="fixed top-[45%] left-24 z-[9999]">← Use these to navigate!</div>
     <demoNav class="fixed top-[40%] left-5 z-[9999]" />
-    <div class="w-screen flex justify-center items-center pt-16">
+    <div class="w-screen bg-gray-100 flex justify-center items-center pt-16">
         <section class="container mx-auto px-4 pt-8 max-w-[1200px]">
             <div class="flex justify-center">
                 <img
@@ -21,7 +11,7 @@
                 />
             </div>
         
-            <h1 class="text-3xl font-semibold text-center">Alset Solar Cybersedan Dashboard Demo</h1>
+            <h1 class="text-3xl text-center">Alset Solar Cybersedan Dashboard Demo</h1>
         
             <hr class="my-6 border-t border-gray-300" />
         
@@ -45,7 +35,7 @@
             </div>
         
             <p class="text-gray-700 leading-relaxed mb-8">
-                This website serves as a DEMO of the Alset Solar Cybersedans dashboard system including details on all visuals and extra info/easter eggs here and there. For more info and context, below is the github readme outlining the entire project :) <br><br>P.S. Mobile is NOT supported<br><br> The Alset Solar Cybersedan Software is a comprehensive full-stack ecosystem developed for the FAUHS AEV solar car, enabling seamless integration and operation of various hardware components such as the Thunderstruck BMS, cameras, GPS module, and custom sound horn. This project was undertaken as part of the Advanced Experimental Vehicles program at FAU High School.
+                This website serves as a DEMO of the Alset Solar Cybersedans dashboard system including details on all visuals and extra info/easter eggs here and there. For more info and context, below is the github readme outlining the entire project<br><br>P.S. Mobile is NOT supported for simulations. But feel free to check out the gallery though :D<br><br> The Alset Solar Cybersedan Software is a comprehensive full-stack ecosystem developed for the FAUHS AEV solar car, enabling seamless integration and operation of various hardware components such as the Thunderstruck BMS, cameras, GPS module, and custom sound horn. This project was undertaken as part of the Advanced Experimental Vehicles program at FAU High School.
             </p>
         
             <h2 class="text-2xl font-semibold mb-4">Overview</h2>

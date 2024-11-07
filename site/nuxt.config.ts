@@ -11,5 +11,11 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: '2024-11-04',
+  runtimeConfig: {
+    s3endpoint: process.env.ENDPOINT,
+    s3accessKey: process.env.ACCESS_KEY,
+    s3secretKey: process.env.SECRET_KEY
+  },
+
+  compatibilityDate: '2024-11-06',
 })
