@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: false },
-  modules: ['@tresjs/nuxt', '@nuxt/content'],
+  modules: ['@tresjs/nuxt', '@nuxt/content', '@nuxtjs/plausible'],
   css: ['~/assets/css/main.css'],
 
   postcss: {
@@ -9,6 +9,10 @@ export default defineNuxtConfig({
       tailwindcss: {},
       autoprefixer: {},
     },
+  },
+
+  plausible: {
+    apiHost: 'https://analytics.zachl.tech',
   },
 
   runtimeConfig: {

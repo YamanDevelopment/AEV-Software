@@ -6,7 +6,7 @@
 
 This website serves as a DEMO of the Alset Solar Cybersedans dashboard system including details on all visuals and extra info/easter eggs here and there. For more info and context, below is the github readme outlining the entire project
 
-P.S. Mobile is NOT supported for simulations. But feel free to check out the gallery though :D
+P.S. Mobile is NOT supported for simulations. But feel free to check out the gallery though :D - Also, you can find screenshots of what the simulations & pages look like [here](https://zipline.zachl.tech/folder/2)
 
 The Alset Solar Cybersedan Software is a comprehensive full-stack ecosystem developed for the FAUHS AEV solar car, enabling seamless integration and operation of various hardware components such as the Thunderstruck BMS, cameras, GPS module, and custom sound horn. This project was undertaken as part of the Advanced Experimental Vehicles program at FAU High School.
 

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@nuxt/content": "^2.13.4",
+    "@nuxtjs/plausible": "^1.0.3",
     "@tresjs/nuxt": "^2.1.2",
     "chart.js": "^4.4.3",
     "minio": "^8.0.2",
