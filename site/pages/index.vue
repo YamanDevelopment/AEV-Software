@@ -18,11 +18,19 @@
             <div class="flex justify-center space-x-4 mb-8">
                 <a
                 class="text-green-500 font-medium hover:underline"
+                href="https://github.com/YamanDevelopment/AEV-Software"
+                target="_blank"
+                rel="noopener noreferrer"
+                >
+                    <img src="https://img.shields.io/github/stars/YamanDevelopment/AEV-Software.svg?style=flat-square&logo=github&logoColor=white&labelColor=444444&color=brightgreen" alt="GH Repo">
+                </a>
+                <a
+                class="text-green-500 font-medium hover:underline"
                 href="https://aev.zachl.tech"
                 target="_blank"
                 rel="noopener noreferrer"
                 >
-                <img src="https://img.shields.io/badge/docs-online-brightgreen.svg" alt="Documentation" />
+                <img class="rounded" src="https://img.shields.io/badge/docs-online-brightgreen.svg" alt="Documentation" />
                 </a>
                 <a
                 class="text-blue-500 font-medium hover:underline"
