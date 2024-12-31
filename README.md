@@ -4,6 +4,8 @@
 
 [![Documentation](https://img.shields.io/badge/docs-online-brightgreen.svg)](https://aev.zachl.tech) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+## [VIEW DEMO SITE HERE](https://aev-demo.zachl.tech)
+
 This website serves as a DEMO of the Alset Solar Cybersedans dashboard system including details on all visuals and extra info/easter eggs here and there. For more info and context, below is the github readme outlining the entire project
 
 P.S. Mobile is NOT supported for simulations. But feel free to check out the gallery though :D - Also, you can find screenshots of what the simulations & pages look like [here](https://zipline.zachl.tech/folder/2)
