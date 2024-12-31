@@ -12,7 +12,7 @@ The Alset Solar Cybersedan Software is designed to interface with the FAUHS AEV 
 
 For more information on the Solar Car Challenge, visit the [Solar Car Challenge website](https://www.solarcarchallenge.org/challenge/).
 
-ℹ️ A live demo of what the software looked like during the race as well as pictures of the dashboard in use is coming soon... 
+ℹ️ Check out the [demo branch](https://github.com/YamanDevelopment/AEV-Software/tree/demo) to find a live demo of what the software looked like during the race as well as pictures of the dashboard in use! 
 
 ## Development and Collaboration
 
