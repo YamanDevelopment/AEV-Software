@@ -54,7 +54,7 @@ Currently primitive documentation built for our team members so they can underst
 The coding subteam members who contributed to the software and the solar car project:
 
 - [Zach Lopez (Frontend/Unix)](https://github.com/ZachLTech)
-- [Thandi Menelas - Str1ke (Backend/Unix)](https://github.com/RealStr1ke)
+- [Thandi Menelas (Backend/Unix)](https://github.com/RealStr1ke)
 - [Jossaya Camille (Frontend/Backend)](https://github.com/jcamille2023)
 - [Amarnath Patel (Unix/Documentation)](https://github.com/jeebuscrossaint)
 
